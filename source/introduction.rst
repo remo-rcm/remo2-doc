@@ -1,6 +1,8 @@
+
+
 .. _cha_introduction:
 
-Introduction [1]_
+Introduction [#phd_thesis]_
 =================
 
 In recent years, regional climate models (RCMs) have proved to be useful
@@ -33,6 +35,9 @@ carried out in a one-way mode (no feedback to the large scales).
 Recently, also two-way nesting methods have been developed
 :cite:`Lorenz2005`.
 
+
+.. _fig_nesting:
+
 .. figure:: ./fig/nesting.png
    :alt: Nesting approach of a regional climate model like REMO.
    :width: 80.0%
@@ -56,7 +61,7 @@ studies, the latter combination (i.e., the EM dynamical core plus the
 ECHAM4 physical parameterisation scheme) proved its ability to
 realistically reproduce regional climatic features and is therefore used
 as the standard setup in recent applications, including the present
-study (see Figure [fig:remo\_origin]).
+study (see :numref:`fig_remo_origin`).
 
 The atmospheric prognostic variables of REMO are the horizontal wind
 components, surface pressure, temperature, specific humidity and cloud
@@ -75,14 +80,14 @@ is usually set to 100 seconds in the first case and to 240 seconds in
 the latter. Recently, also simulations using higher resolutions of about
 10 km have been successfully carried out (D. Jacob, pers. comm.).
 
-As described in Chapter [cha:preprocessing], the lateral boundary
+As described in :numref:`cha_preprocessing`, the lateral boundary
 conditions can either be provided by a GCM simulation or by re-analysis
 or analysis products. In all cases, the relaxation scheme according to
 :cite:`Davies1976` is applied: The prognostic variables of
 REMO are adjusted towards the large-scale forcing in a lateral sponge
 zone of 8 grid boxes with the LBC influence exponentially decreasing
 towards the inner model domain. At the lower boundary, REMO is forced by
-the land surface characteristics (see Chapter [sec:remo\_land\_surface])
+the land surface characteristics (see :numref:`sec_lss`)
 and, over sea, by the sea surface temperature (SST) and sea ice
 distribution. The SST can either be interpolated from the large-scale
 forcing (if existent in there) or observational datasets, or can be
@@ -91,11 +96,15 @@ calculated online by a regional ocean model coupled to REMO
 ice extent, which can as a further option also be diagnosed from the
 SST.
 
+.. _fig_remo_origin:
+
 .. figure:: ./fig/remo_origin.png
    :alt: Origins of the regional climate model REMO.
    :width: 80.0%
 
    Origins of the regional climate model REMO.
+
+.. _sec_lss:
 
 Land Surface Treatment
 ----------------------
@@ -138,9 +147,9 @@ publications mentioned above.
 Fractional Surface Cover and Turbulent Fluxes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. _fig_tile_approach:
+
 .. figure:: fig/tile_approach.png
-   :alt: The tile approach. Example for a grid box covered by land
-   (60%), water (30%) and sea ice (10%).
    :width: 90.0%
 
    The tile approach. Example for a grid box covered by land (60%),
@@ -148,10 +157,9 @@ Fractional Surface Cover and Turbulent Fluxes
 
 In the original ECHAM4 parameterisation, a model grid box consisted of
 only one single surface type, i.e. was either covered by land, water or
-sea ice (or permanently by glacier ice, see Chapter
-[sec:remo\_glacier\_cover]). :cite:`Semmler2002` extended
-this concept for REMO by introducing subgrid fractions for each of the
-three basic types (see Figure [fig:tile\_approach] for an example).
+sea ice (or permanently by glacier ice, see :numref:`Glaciers`. 
+:cite:`Semmler2002` extended this concept for REMO by introducing subgrid fractions for each of the
+three basic types (see :numref:`fig_tile_approach` for an example).
 These fractions are not assumed to be located in a specific area of a
 grid box but do simply cover a certain percentage of the total grid box
 area, summing up to a total of 100%(\ *tile approach*). Applying this
@@ -181,7 +189,7 @@ land surfaces, the roughness length :math:`z_0` is geographically
 prescribed as a function of subgrid-scale orography and vegetation type.
 For the turbulent fluxes of sensible and latent heat :math:`z_0` is
 restricted to a maximum value of 0.1 m. Over open water, the relation
-after :cite:`\:cite:Charnock1955}` with a minimum value for
+after :cite:`Charnock1955` with a minimum value for
 :math:`z_0` of :math:`\mathsf{1.5 \cdot 10^{-5} m}` with subsequent
 reduction of the heat transfer coefficient is applied. Over sea ice a
 constant value of :math:`z_0` = 0.001m is prescribed.
@@ -216,6 +224,8 @@ Soil Processes
 Heat Budget
 ^^^^^^^^^^^
 
+.. _fig_soil_layers:
+
 .. figure:: ./fig/soil_layers.png
    :alt: Soil temperatures and layering in REMO
    :width: 80.0%
@@ -224,7 +234,7 @@ Heat Budget
 
 The temperature profile in the soil is calculated applying a heat
 conduction equation for five soil layers with increasing thicknesses
-from the surface downwards (Figure [fig:soil\_layers]). A zero heat flux
+from the surface downwards (:numref:`fig_soil_layers`). A zero heat flux
 condition is applied at the lowest boundary. Heat conductivity and heat
 capacity of the soil layers depend on the respective soil type.
 Additionally, a dependency of these two parameters on the soil water
@@ -241,14 +251,15 @@ Hydrology
 The parameterisation of soil hydrology in REMO consists of budget
 equations for the following three reservoirs:
 
--  the amount of snow accumulated on the surface (Chapter
-   [sec:remo\_snow\_cover])
+-  the amount of snow accumulated on the surface (:numref:`Snow Cover`)
 
 -  the amount of water in the skin reservoir (i.e., rain water and
    melting snow that is intercepted by the vegetation until its water
    holding capacity is reached)
 
 -  the amount of water in the soil
+
+.. _fig_soil_hydrology:
 
 .. figure:: ./fig/soil_hydrology.png
    :alt: Soil hydrology in REMO.
@@ -273,15 +284,17 @@ infiltrates into the soil is used to fill the soil water reservoir. From
 here, subsurface drainage occurs independent of the water input if the
 soil wetness is larger than 5% of the field capacity :math:`W_{S,max}`
 (slow drainage). Once the relative soil water content reaches 90%, a
-second, fast drainage component is additionally activated (Figure
-[fig:soil\_hydrology]). The sum of both drainage components equals the
+second, fast drainage component is additionally activated (:numref:`fig_soil_hydrology`). 
+The sum of both drainage components equals the
 total drainage, which is the subsurface counterpart of surface runoff.
 Furthermore, soil water can be extracted by surface evaporation /
 evapotranspiration which is computed from atmospheric demand and plant
-physiological characteristics (see Chapter [sec:remo\_surface\_cover]).
+physiological characteristics (see :numref:remo\_surface\_cover]).
 
 Snow Cover
 ~~~~~~~~~~
+
+.. _fig_snow_layers:
 
 .. figure:: ./fig/snow_layers.png
    :alt: Snow layers and corresponding temperatures in REMO.
@@ -309,10 +322,9 @@ or energy input is used for snow melt. Snow density and heat
 conductivity depend on the snow temperature :math:`T_{sn}` with both
 parameters increasing with rising temperatures.
 
+.. _fig_snow_albedo:
+
 .. figure:: fig/snow_albedo.png
-   :alt: Dependency of the snow albedo :math:`\alpha_{snow}` on snow
-   surface temperature :math:`T_S` and forest fraction
-   :math:`f_{forest}` in a REMO grid box.
    :width: 95.0%
 
    Dependency of the snow albedo :math:`\alpha_{snow}` on snow surface
@@ -323,7 +335,7 @@ The snow albedo :math:`\alpha_{snow}` is a function of the snow surface
 temperature :math:`T_S` and of the forest fraction :math:`f_{forest}` in
 a grid :math:`\alpha_{snow,max}`. For -10 :math:`\ \le\ T_S\ \le\ ` 0 it
 decreases linearly until the minimum value of :math:`\alpha_{snow,min}`
-is reached at :math:`T_S` = 0 (Figure [fig:snow\_albedo]). This
+is reached at :math:`T_S` = 0 (:numref:`fig_snow_albedo`). This
 dependency on snow temperature accounts for the fact that wet snow
 usually has a higher temperature and a lower albedo than completely
 frozen snow :cite:`\[][see also Chapter
@@ -348,11 +360,11 @@ with a critical snow depth :math:`Sn^{\ast}` = 0.01and
 :math:`\alpha_{surf}` approaching :math:`\alpha_{snow}` for
 :math:`Sn \gg Sn^{\ast}`.
 
+
 Glaciers
 ~~~~~~~~
 
-As most state-of-the-art climate models (see Chapter
-[sec:glaciers\_and\_climate\_modelling]), REMO in its default version
+As most state-of-the-art climate models, REMO in its default version
 uses a static glacier mask *GLAC* which is allocated at the start of the
 simulation and which does not change with time. In the standard setup,
 the mask is diagnosed at the very first model time step from the snow
@@ -365,16 +377,16 @@ Ice Sheet). In REMO simulations over Europe, typically no single grid
 cell on the European Continent is considered as being glaciated (Figure
 [fig:glac\_ivecc]).
 
+.. _fig_glac_ivecc:
+
 .. figure:: ./fig/glac_ivecc.png
-   :alt: Static glacier mask used in a standard REMO simulation over
-   Europe.
+   :alt: Static glacier mask used in a standard REMO simulation over Europe.
    :width: 80.0%
 
    Static glacier mask used in a standard REMO simulation over Europe.
 
 Grid boxes marked as “glacier” are assumed to be totally covered by ice.
-The soil heat equations are solved for five layers (see Chapter
-[sec:remo\_soil]), but assuming the thermal characteristics of ice. The
+The soil heat equations are solved for five layers, but assuming the thermal characteristics of ice. The
 process of runoff generation on glacier ice is neglected. Both surface
 runoff and drainage are set to zero in each time step. A snow pack on
 top of the ice surface is not considered and therefore also snow melt
@@ -386,7 +398,7 @@ output, the snow depth does remain at its initial value larger than
 must also be derived for a subsequent model simulation at higher
 resolution). Similarly to the snow albedo on the land fraction of
 non-glaciated boxes, the albedo of a glaciated grid box is a function of
-the surface temperature :math:`T_S` (see Figure [fig:snow\_albedo]),
+the surface temperature :math:`T_S` (see :numref:`fig_snow_albedo`),
 varying between :math:`\alpha_{ice,max}` = 0.8 (for :math:`T_S \le `
 -10) and :math:`\alpha_{ice,min}` = 0.6 (for :math:`T_S` = 0).
 
@@ -424,11 +436,9 @@ leap-frog scheme with semi-implicit corrections and Asselin filter
 :cite:`Asselin1972`. In the horizontal direction the
 prognostic variables are defined on an Arakawa-C grid
 
+.. _fig_arakawa_c_grid:
+
 .. figure:: ./fig/arakawa_c_grid.png
-   :alt: **Arakawa-C grid.** A grid box of an Arakawa-C grid is shown.
-   Scalar values () are defined in the center of the grid boxes, while
-   wind-vector components (:math:`u`, :math:`v`) are located at the
-   border of the grid box
 
    **Arakawa-C grid.** A grid box of an Arakawa-C grid is shown. Scalar
    values () are defined in the center of the grid boxes, while
@@ -447,14 +457,11 @@ grid.
 
 The vertical direction is discretized using a hybrid sigma-pressure
 
-.. figure:: ./fig/sigma_coordinates.png
-   :alt: **:math:`\sigma`-coordinate system.** The vertical grid
-   consisting of a :math:`\sigma`-coordinate system is shown. Scalar
-   values () are defined in the center of the layers (at full-levels),
-   while vertical velocities (:math:`w`) are located at the layer
-   boundaries (at half-levels)
+.. _sigma_coordinates:
 
-   **:math:`\sigma`-coordinate system.** The vertical grid consisting of
+.. figure:: ./fig/sigma_coordinates.png
+
+   :math:`\sigma`-coordinate system. The vertical grid consisting of
    a :math:`\sigma`-coordinate system is shown. Scalar values () are
    defined in the center of the layers (at full-levels), while vertical
    velocities (:math:`w`) are located at the layer boundaries (at
@@ -531,7 +538,9 @@ modifications after :cite:`Nordeng1994`. It has been
 modified for chemical tracers in the frame of this study. This is
 described in .
 
-.. [1]
+.. rubric:: Footnotes
+
+.. [#phd_thesis]
    based on PhD Thesis “A Subgrid Glacier Parameterisation for Use in
    Regional Climate Modelling” (Chapter 3) by Sven Kotlarski and
    “Climate and Air Pollution Modelling in South America with Focus on

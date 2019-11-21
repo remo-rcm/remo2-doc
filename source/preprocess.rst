@@ -1,4 +1,4 @@
-.. _preprocessing:
+.. _cha_preprocessing:
 
 Preprocessing
 =============
@@ -483,8 +483,8 @@ the South Pole coordinates as indicated in the config file. From version
 5.1 on, REMO uses a fractional surface coverage (each grid box can
 contain a land, a water and a sea ice fraction). Therefore, when
 carrying out simulations with a newer REMO version, the parameter IWATER
-has to be set to 1. For the fractional version, there are also modiﬁed
-scripts ending on ...\_frac.sh that have to be executed (see below).
+has to be set to 1. For the fractional version, there are also modified
+scripts ending on `_frac.sh` that have to be executed (see below).
 
 Running the setup.sh script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
