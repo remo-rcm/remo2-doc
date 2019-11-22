@@ -949,64 +949,103 @@ information or file formats.
 RemapToREMO - Creating Forcing Files (a-files)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| Forcing files (a-files) are created from g-files using the
-  preprocesser. The preprocessor is a Fortran program that can read a
-  g-file and does the interpolation to the model domain of interest
-  including the transformation to the rotated grid of REMO. Each a-file
-  contains forcing data for a certain date and time and there is usually
-  a forcing file for each 6 hours (e.g., for each day at 00 hours, 06
-  hours, 12 hours, 18 hours). The a-files usually contain about 35 2D
-  and 3D variables (depending on some switches in the REMO preprocessor
-  configuration) that initialize and force the model run. They are
-  listed in table [tab:afile\_content]. The first 9 fields are the
-  minimum that is required to be in each forcing file to update the
-  boundary conditions dynamically with a 6-hour interval, the fields for
-  the sea ice depth (``SICED``) and liquid water content (``QW``) are
-  optional. The rest of the fields are only needed at the start of the
-  model run to define initial conditions. Consequently, these fields are
-  required to be, at least, in the a-file of the initilisation date but
-  not neccessarily in all of them (since these fields are constant in
-  time anyway). However, most often it is a good idea to include all 35
-  fields in all a-files so that the model can be initalized at any time.
-  The additional fields are also useful for comparision of input and
-  output data.
+Forcing files (a-files) are created from g-files using the
+preprocesser. The preprocessor is a Fortran program that can read a
+g-file and does the interpolation to the model domain of interest
+including the transformation to the rotated grid of REMO. Each a-file
+contains forcing data for a certain date and time and there is usually
+a forcing file for each 6 hours (e.g., for each day at 00 hours, 06
+hours, 12 hours, 18 hours). The a-files usually contain about 35 2D
+and 3D variables (depending on some switches in the REMO preprocessor
+configuration) that initialize and force the model run. They are
+listed in table [tab:afile\_content]. The first 9 fields are the
+minimum that is required to be in each forcing file to update the
+boundary conditions dynamically with a 6-hour interval, the fields for
+the sea ice depth (``SICED``) and liquid water content (``QW``) are
+optional. The rest of the fields are only needed at the start of the
+model run to define initial conditions. Consequently, these fields are
+required to be, at least, in the a-file of the initilisation date but
+not neccessarily in all of them (since these fields are constant in
+time anyway). However, most often it is a good idea to include all 35
+fields in all a-files so that the model can be initalized at any time.
+The additional fields are also useful for comparision of input and
+output data.
 
-|  \| l \| l \| l \| p7cm \| Name & Layers & Code & Description
-| U & MOKE& 131&U-velocity
-| V & MOKE& 132&V-velocity
-| T, & MOKE& 130&Air temperature
-| QD & MOKE& 133&specific humidity
-| PS & 1& 134&surface pressure
-| QDBL & 1& 84&specific humidity surface (land)
-| TSWECH & 1& 55&surface temperature (water)
-| TSIECH & 1& 56&surface temperature (ice)
-| SEAICE & 1& 210&sea ice cover
-| SICED & 1& 211&sea ice depth
-| QW & MOKE& 153&liquid water content
-| TSLECH & 1& 54&surface temperature (land)
-| TSN & 1& 206&snow temperature
-| TD3 & 1& 207&soil temperature
-| TD4 & 1& 208&soil temperature
-| TD5 & 1& 209&soil temperature
-| TD & 1& 170&deep soil temperature
-| TDCL & 1& 183&soil temperature
-| WSECH & 1& 140&soil wetness
-| SN & 1& 141&snow depth
-| WL & 1& 194&skin reservoir content
-| FIB & 1& 129&surface geopotential (orography)
-| BLA & 1& 172&land sea mask
-| GLAC & 1& 232&glacier mask
-| AZ0 & 1& 173&surface roughness length
-| VGRAT & 1& 198&vegetation ratio
-| FOREST & 1& 212&vegetation type
-| ALBECH & 1& 174&surface background albedo
-| WSMX & 1& 229&field capacity of soil
-| VLT & 1& 200&leaf area index
-| FAO & 1& 226&FAO data set (soil data flags)
-| VAROR & 1& 199&orographic variance (for surface runoff)
-| BETA & 1& 272&shape parameter for Arno Scheme
-| WMINLOK & 1& 273&minimum subgrid wcap (field capacity)
-| WMAXLOK & 1& 274&maximum subgrid wcap (field capacity)
++-----------+--------+-------+--------------------------------------------+
+| Name      | Dim    | Code  | Description                                |
++===========+========+=======+============================================+
+| U         | MOKE   | 131   | U-velocity                                 |
++-----------+--------+-------+--------------------------------------------+
+| V         | MOKE   | 132   | V-velocity                                 |
++-----------+--------+-------+--------------------------------------------+
+| T,        | MOKE   | 130   | Air temperature                            |
++-----------+--------+-------+--------------------------------------------+
+| QD        | MOKE   | 133   | specific humidity                          |
++-----------+--------+-------+--------------------------------------------+
+| PS        | 1      | 134   | surface pressure                           |
++-----------+--------+-------+--------------------------------------------+
+| QDBL      | 1      | 84    | specific humidity surface (land)           |
++-----------+--------+-------+--------------------------------------------+
+| TSWECH    | 1      | 55    | surface temperature (water)                |
++-----------+--------+-------+--------------------------------------------+
+| TSIECH    | 1      | 56    | surface temperature (ice)                  |
++-----------+--------+-------+--------------------------------------------+
+| SEAICE    | 1      | 210   | sea ice cover                              |
++-----------+--------+-------+--------------------------------------------+
+| SICED     | 1      | 211   | sea ice depth                              |
++-----------+--------+-------+--------------------------------------------+
+| QW        | MOKE   | 153   | liquid water content                       |
++-----------+--------+-------+--------------------------------------------+
+| TSLECH    | 1      | 54    | surface temperature (land)                 |
++-----------+--------+-------+--------------------------------------------+
+| TSN       | 1      | 206   | snow temperature                           |
++-----------+--------+-------+--------------------------------------------+
+| TD3       | 1      | 207   | soil temperature                           |
++-----------+--------+-------+--------------------------------------------+
+| TD4       | 1      | 208   | soil temperature                           |
++-----------+--------+-------+--------------------------------------------+
+| TD5       | 1      | 209   | soil temperature                           |
++-----------+--------+-------+--------------------------------------------+
+| TD        | 1      | 170   | deep soil temperature                      |
++-----------+--------+-------+--------------------------------------------+
+| TDCL      | 1      | 183   | soil temperature                           |
++-----------+--------+-------+--------------------------------------------+
+| WSECH     | 1      | 140   | soil wetness                               |
++-----------+--------+-------+--------------------------------------------+
+| SN        | 1      | 141   | snow depth                                 |
++-----------+--------+-------+--------------------------------------------+
+| WL        | 1      | 194   | skin reservoir content                     |
++-----------+--------+-------+--------------------------------------------+
+| FIB       | 1      | 129   | surface geopotential (orography)           |
++-----------+--------+-------+--------------------------------------------+
+| BLA       | 1      | 172   | land sea mask                              |
++-----------+--------+-------+--------------------------------------------+
+| GLAC      | 1      | 232   | glacier mask                               |
++-----------+--------+-------+--------------------------------------------+
+| AZ0       | 1      | 173   | surface roughness length                   |
++-----------+--------+-------+--------------------------------------------+
+| VGRAT     | 1      | 198   | vegetation ratio                           |
++-----------+--------+-------+--------------------------------------------+
+| FOREST    | 1      | 212   | vegetation type                            |
++-----------+--------+-------+--------------------------------------------+
+| ALBECH    | 1      | 174   | surface background albedo                  |
++-----------+--------+-------+--------------------------------------------+
+| WSMX      | 1      | 229   | field capacity of soil                     |
++-----------+--------+-------+--------------------------------------------+
+| VLT       | 1      | 200   | leaf area index                            |
++-----------+--------+-------+--------------------------------------------+
+| FAO       | 1      | 226   | FAO data set (soil data flags)             |
++-----------+--------+-------+--------------------------------------------+
+| VAROR     | 1      | 199   | orographic variance (for surface runoff)   |
++-----------+--------+-------+--------------------------------------------+
+| BETA      | 1      | 272   | shape parameter for Arno Scheme            |
++-----------+--------+-------+--------------------------------------------+
+| WMINLOK   | 1      | 273   | minimum subgrid wcap (field capacity)      |
++-----------+--------+-------+--------------------------------------------+
+| WMAXLOK   | 1      | 274   | maximum subgrid wcap (field capacity)      |
++-----------+--------+-------+--------------------------------------------+
+
+Table: Forcing Fields
 
 RemapToREMO
 ^^^^^^^^^^^
@@ -1021,19 +1060,19 @@ grid of the regional domain. The input forcing data are either from:
 
 -  model output from regional climate data simulations.
 
-| The interpolated forcing data are combined with the surface data
-  created with the bodlib toolkit (Section [sec:preproc:bodlib]) and are
-  stored as **a**-files.
-| The new preprocessor is now called ``RemapToREMO``. It contains all
-  neccessary source code to compile any preprocessor configuration
-  including reanalysis with ERA-INTERIM, global model data that fullfils
-  nc-conventions as well as a configuration for preparing remo output
-  data for double nesting. The different configurations originate from
-  several legacy codes that have been combined to avoid further code
-  duplication. This program will build the preprocessor executable that
-  then can be used to convert g files generated from the global model
-  output or t files generated by the REMO in to a files, that are used
-  to force REMO.
+The interpolated forcing data are combined with the surface data
+created with the bodlib toolkit (Section [sec:preproc:bodlib]) and are
+stored as **a**-files.
+The new preprocessor is now called ``RemapToREMO``. It contains all
+neccessary source code to compile any preprocessor configuration
+including reanalysis with ERA-INTERIM, global model data that fullfils
+nc-conventions as well as a configuration for preparing remo output
+data for double nesting. The different configurations originate from
+several legacy codes that have been combined to avoid further code
+duplication. This program will build the preprocessor executable that
+then can be used to convert g files generated from the global model
+output or t files generated by the REMO in to a files, that are used
+to force REMO.
 
 Requirements
 ^^^^^^^^^^^^

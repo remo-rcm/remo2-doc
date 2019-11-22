@@ -399,9 +399,11 @@ Table: IEG Format; Product Definition Block contained in IPDB.
 Code List of Variables
 ======================
 
-| \| l \| c \| l \| p8cm \| l \| [tab:code\_list] Code& Layers & Name &
-  Description & Unit
-| & & & &
+.. csv-table:: Code List
+   :file: code_list.csv
+   :widths: 5 5 5 5 20 5 5
+   :header-rows: 1
+
 
 Namelist of Input Parameters
 ============================
