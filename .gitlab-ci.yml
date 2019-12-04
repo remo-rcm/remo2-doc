@@ -5,9 +5,7 @@ variables:
 
 pages:
   script:
-  - apk --no-cache add py2-pip python-dev
-  - pip install sphinx
-  - apk --no-cache add make
+  - conda env create -f environment.yml
   - make html
   - mv build/html/ public/
   artifacts:
