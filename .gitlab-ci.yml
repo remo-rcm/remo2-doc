@@ -2,7 +2,7 @@ image: continuumio/miniconda3:latest
 
 variables:
   GIT_SSL_NO_VERIFY: "1"
-  DEPTH: "10"
+  GIT_DEPTH: "10"
 
 pages:
   script:
