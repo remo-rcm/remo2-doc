@@ -11,6 +11,7 @@ pages:
   script:
   - conda env create -f environment.yml
   - conda install -c anaconda make
+  - apt-get install python3-sphinx
   - make html
   - mv build/html/ public/
   artifacts:
