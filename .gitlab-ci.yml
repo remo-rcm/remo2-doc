@@ -16,6 +16,6 @@ pages:
   - mv build/html /public
   artifacts:
     paths:
-    - /var/www/html/remo2-doc
+    - /public
   only:
   - master
