@@ -5,12 +5,12 @@ variables:
 
 before_script:
   - git --version
+  - pwd
 
 pages:
   script:
   - conda env create -f environment.yml
   - conda install -c anaconda make
-  - cd remo2-doc
   - make html
   - mv build/html/ public/
   artifacts:
