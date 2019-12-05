@@ -10,7 +10,7 @@ before_script:
 pages:
   script:
   - conda env create -f environment.yml
-  - conda activate py3-sphinx
+  - source activate py3-sphinx
   - conda install -c anaconda make
   - make html
   - mv build/html/ public/
