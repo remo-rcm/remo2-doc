@@ -13,9 +13,9 @@ pages:
   - source activate py3-sphinx
   - conda install -c anaconda make
   - make html
-  - mv build/html/ public/
+  - mv build/html/ /var/www/html/remo2-doc
   artifacts:
     paths:
-    - public
+    - /var/www/html/remo2-doc
   only:
   - master
