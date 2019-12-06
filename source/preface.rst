@@ -182,22 +182,33 @@ changing one). Right now, all pointers in ``mo_memory_main.f90`` in the
 they could also be declared with one ranks since the subroutines in
 ``mo_memory_base.f90`` will catch this case.
 
-| The new REMO version now supports in and output of model data in the
-  netcdf format. In and Output can be chosen independendtly from each
-  other so that old forcing files in IEG format can still be used while
-  output can be written in netcdf format. For more details on how to
-  compile with netcdf support, have a look at Section
-  [sec:compilation\_netcdf]. Also the preprocessor can now create
-  forcing data (a-files) in netcdf format which allows for model runs
-  with more than 50 model levels. The Netcdf support is handled using
-  preprocessor statements and the user has to decide at compilation time
-  which file format should be used for the model run. However, the old
-  IEG output is still available although it does not make use of the
-  stream datatype and but rather copies the content of the pointer
-  variables into an output field in ``putec4.f``. The same is true for
-  data input by IEG forcing files in ``puteca.f``. Therefore, special
-  attention is still needed if new variables are added for output in IEG
-  format.
+The new REMO version now supports in and output of model data in the
+netcdf format. In and Output can be chosen independendtly from each
+other so that old forcing files in IEG format can still be used while
+output can be written in netcdf format. For more details on how to
+compile with netcdf support, have a look at Section
+[sec:compilation\_netcdf]. Also the preprocessor can now create
+forcing data (a-files) in netcdf format which allows for model runs
+with more than 50 model levels. The Netcdf support is handled using
+preprocessor statements and the user has to decide at compilation time
+which file format should be used for the model run. However, the old
+IEG output is still available although it does not make use of the
+stream datatype and but rather copies the content of the pointer
+variables into an output field in ``putec4.f``. The same is true for
+data input by IEG forcing files in ``puteca.f``. Therefore, special
+attention is still needed if new variables are added for output in IEG
+format.
+
+REMO Data Workflow
+------------------
+
+.. _fig_data_workflow:
+
+.. figure:: ./fig/data-workflow.png
+   :alt: Data Workflow in a REMO experiment. 
+   :width: 100.0%
+
+   Data Workflow in a REMO experiment.
 
 Version Overview
 ----------------

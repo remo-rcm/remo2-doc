@@ -23,6 +23,7 @@ Contents:
    memory
    externals
    appendix
+   syntax-examples
 
 
 Indices and tables

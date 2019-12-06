@@ -5,7 +5,7 @@ If you want to build the documentation, you can choose between `html` or `pdf`, 
 
 ```
 make html
-make pdf
+make latexpdf
 ```
 
 ## Contributions
