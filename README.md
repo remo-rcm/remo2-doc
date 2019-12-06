@@ -12,9 +12,10 @@ make latexpdf
 
 ## Contributions
 
-You are welcome to contribute documentation by simply adding it in the `rst` format.
+You are welcome to contribute documentation by simply adding a file it in the `rst` format.
 The source files are located in the `source` directory. The start page is defined
 in the `index.rst` file where you can include new chapters. If you are adding
 an external contribution, you can add it to the `externals.rst` index page and
 simply write your documentation into a plain `rst` file. Formatting it nicely
-is not important and can be done afterwards.
+is not important and can be done afterwards. If you are interested in formatting
+your text, have a look at the `syntax-examples.rst` file.
