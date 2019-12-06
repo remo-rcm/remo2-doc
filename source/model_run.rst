@@ -180,45 +180,60 @@ That sould compile REMO with NETCDF support.
 The INPUT Namelist File
 -----------------------
 
-| The REMO model requires a Namelist File called ``INPUT`` at runtime.
-  Some of the most important Namelists and Parameters are listed in
-  Table [tab:namelist\_overview]. A full description of all parameters
-  can be found in Appendix [cha:remo\_namelist]. However, most
-  parameters are set by default during the REMO run but the parameters
-  in Table [tab:namelist\_overview] need special attention since they
-  are domain specific and dependet on the setup of the experiment during
-  preprocessing. The most important settings are the following:
-| **PARTCTL** section: Here you have to choose how the REMO domain is
-  decomposed for parallel computation. NPROCXM and NPROCYM define the
+The REMO model requires a Namelist File called ``INPUT`` at runtime.
+Some of the most important Namelists and Parameters are listed in
+Table [tab:namelist\_overview]. A full description of all parameters
+can be found in Appendix [cha:remo\_namelist]. However, most
+parameters are set by default during the REMO run but the parameters
+in Table [tab:namelist\_overview] need special attention since they
+are domain specific and dependet on the setup of the experiment during
+preprocessing. The most important settings are the following:
+
+.. topic:: ``PARCTL``
+
+  Here you have to choose how the REMO domain is
+  decomposed for parallel computation. ``NPROCXM`` and ``NPROCYM`` define the
   number of subdivions in x- and y-direction of the domain. Usually, an
   evenly distribution of cells per processor is most efficient but
   should not be less than 400 cells (e.g., 20x20 cells) because
   otherwise the communication overhead might dominate the model run.
-| **EMGRID** section: Here you have to adjust the parameters of your
+
+.. topic:: ``EMGRID``
+
+  Here you have to adjust the parameters of your
   model domain (as in the preprocessor namelist, see above), i.e., lat
-  and lon of the lower left corner in the rotated system (PHILU,RLALU),
-  lat and lon of the rotated north pole (POLPHI, POLLAM) and the
-  resolution in x- and y-direction in degrees (DLAM, DPHI).
-| **RUNCTL** section: Adjust the time of model initialisation (very
-  first time step, YADAT), the time step in seconds (DT) and the
-  temporal resolution of the driving fields (NHDR) which is in almost
-  all cases 6 hours. Furthermore, the switches LMOMON (FALSE if real
-  month are to be computed, TRUE if the forcing only has 30 days per
-  month), LQWR (TRUE if forcing contains liquid water, FALSE if not) and
-  LSCEN (TRUE if time-dependent greenhouse gas concentrations are to be
+  and lon of the lower left corner in the rotated system (``PHILU``,``RLALU``),
+  lat and lon of the rotated north pole (``POLPHI``, ``POLLAM``) and the
+  resolution in x- and y-direction in degrees (``DLAM``, ``DPHI``).
+
+.. topic:: ``RUNCTL``
+
+  Adjust the time of model initialisation (very
+  first time step, ``YADAT``), the time step in seconds (``DT``) and the
+  temporal resolution of the driving fields (``NHDR``) which is in almost
+  all cases 6 hours. Furthermore, the switches ``LMOMON`` (FALSE if real
+  month are to be computed, ``TRUE`` if the forcing only has 30 days per
+  month), ``LQWR`` (``TRUE`` if forcing contains liquid water, ``FALSE`` if not) and
+  ``LSCEN`` (``TRUE`` if time-dependent greenhouse gas concentrations are to be
   used, FALSE for constant greenhouse gas concentrations) have to be
   set.
-| **PHYCTL** section: Adjust the switches LVEG (TRUE if monthly varying
-  vegetation fields are to be used, FALSE if not), LSICED (TRUE if the
+
+.. topic:: ``PHYCTL``
+
+  Adjust the switches ``LVEG`` (``TRUE`` if monthly varying
+  vegetation fields are to be used, ``FALSE`` if not), ``LSICED`` (``TRUE`` if the
   forcing contains sea ice concentrations, FALSE if not and if the sea
-  ice concentration should be diagnosed from SST) and LAEROZ (TRUE if
+  ice concentration should be diagnosed from ``SST``) and ``LAEROZ`` (``TRUE`` if
   time dependent aerosol and ozone background concentrations are to be
-  used, FALSE if constant background concentrations are used).
-| **DATEN** section: Adjust the names of the three vegetation files
-  (annual cycle of three parameters, see abobe; YBDNAM), the name of the
+  used, ``FALSE`` if constant background concentrations are used).
+
+.. topic:: ``DATEN``
+  
+  Adjust the names of the three vegetation files
+  (annual cycle of three parameters, see abobe; ``YBDNAM``), the name of the
   file containing the time-dependent greenhouse gas concentrations
-  (YGDNAM) and, if applicable, the filenames for the time-dependent
-  ozone, aerosol and sulfate concentrations (YO3DNAM, YSADNAM, YSNDNAM).
+  (``YGDNAM``) and, if applicable, the filenames for the time-dependent
+  ozone, aerosol and sulfate concentrations (``YO3DNAM``, ``YSADNAM``, ``YSNDNAM``).
 
 +------------+-------------+-----------------------------------------------------------------------------------+
 | Namelist   | Parameter   | Description                                                                       |
