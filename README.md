@@ -1,8 +1,10 @@
-# `remo2` Documenation
+# remo documentation
 
 [![pipeline status](http://git.gerics.de/REMO/remo2-doc/badges/master/pipeline.svg)](http://git.gerics.de/REMO/remo2-doc/commits/master)
 
-The documentation for remo2 comes is using [sphinx](https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html).
+[Internal link](http://136.172.63.17/remo2-doc/html/) to the html version
+
+The documentation for remo2 is using [sphinx](https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html).
 If you want to build the documentation, you can choose between `html` or `pdf`, using:
 
 ```
@@ -18,4 +20,4 @@ in the `index.rst` file where you can include new chapters. If you are adding
 an external contribution, you can add it to the `externals.rst` index page and
 simply write your documentation into a plain `rst` file. Formatting it nicely
 is not important and can be done afterwards. If you are interested in formatting
-your text, have a look at the `syntax-examples.rst` file.
+your text, have a look at the `syntax-examples.rst` file. Remember that you can also edit the rst files in the gitlab.
