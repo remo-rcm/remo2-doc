@@ -172,7 +172,7 @@ should check in the Makefile if the compiler options contain some
 consistent with the endianness of the input file.
 
 Naming Conventions [1]_
-=======================
+-----------------------
 
 -  a002155aYYYYMM.tar : These files contain the 6-hourly forcing data
    for REMO (“a” = “Antrieb” = forcing). The individual ieg files in the
@@ -205,7 +205,7 @@ Naming Conventions [1]_
    e002155fYYYYMM and e002155gYYYYMM (two time steps).
 
 The IEG Format [2]_
-===================
+-----------------------
 
 | The generic data format used by REMO is a “Max Planck -internal”
   FORTRAN binary format which is usually referred to as “ieg-format”
@@ -397,7 +397,7 @@ Table: IEG Format; Product Definition Block contained in IPDB.
   ist.
 
 Code List of Variables
-======================
+----------------------
 
 .. csv-table:: Code List
    :file: code_list.csv
@@ -406,7 +406,7 @@ Code List of Variables
 
 
 Namelist of Input Parameters
-============================
+----------------------------
 
 Some variables are version specific. Please mention the dependence on
 specific REMO versions in the variable description below. All namelist
@@ -418,13 +418,13 @@ though).
 | & & &
 
 Namelist for the Preprocessor
-=============================
+-----------------------------
 
 Constants in REMO Physics
-=========================
+-------------------------
 
 Model Domains and Grids
-=======================
+-----------------------
 
 REMO was originally developed for the European model domain. Through
 several projects and cooperations, REMO was further developed and used
@@ -472,7 +472,7 @@ introduced to reduce model biases in regions such as South America and
 West Asia.
 
 South America
--------------
+~~~~~~~~~~~~~
 
 In vdiff.f, Line 515 is commented out:
 
@@ -501,7 +501,7 @@ And the following lines were added after Line 783:
     >           ENDIF
 
 West Asia
----------
+~~~~~~~~~
 
 In init.f, Line 108 to 139 were modified:
 
@@ -527,16 +527,16 @@ In init.f, Line 108 to 139 were modified:
     >           TLAMBDA(I)=1.03E-7
 
 Grid Decomposition
-==================
+------------------
 
 (0,0) grid (12,12); (0,0) – (12,0); (0,0) – (0,12); (12,0) – (12,12);
 (0,12) – (12,12);
 
 REMO Model Parameters
-=====================
+---------------------
 
 Possible domain sizes
-=====================
+---------------------
 
 Here you will find a list of possible domain sizes up to 600 gridboxes
 per dimension (these are the so called magic numbers). Due to a fft
