@@ -13,7 +13,7 @@ pages:
   - source activate py3-sphinx
   - conda install -c anaconda make
   - make html
-  - ls /public
+  - rm -r /public/html
   - mv build/html /public
   - ls /public
   artifacts:
