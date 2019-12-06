@@ -455,21 +455,21 @@ following parameters in the config file:
                                 #     WAVA and ICAP) will computed only based on non-
                                 #     glaciated land fraction
 
-NOTE: The surface library covers the REMO model domain PLUS one row of
-gridboxes outside the model domain along each side. You need an
-additional band of one boundary box around your future REMO domain in
-the surface library. Consequently, we have to add 2 grid boxes for each
-dimension resulting in ``RESOLUTION_X`` and ``RESOLUTION_Y`` being
-larger by 2 gridboxes than the actual grid of the REMO run. It is also
-crucial to shift the coordinates for the lower left grid box center
-(``LON_LL``, ``LAT_LL``) by one grid cell to the left and bottom
-respectively. Note that in REMO and the BodLibKit, grid related
-coordinates always denote the center of a grid box, e.g., (``LON_LL``,
-``LAT_LL``) denotes the coordinates of the center of the lower left grid
-box and NOT the lower left corner of the model domain (which would be
-shifted by another half of a grid box). If you are unsure, you can have
-a look at the REMO user guide for a detailled example of how to create a
-Surface Library with the BodLibKit.
+.. note:: The surface library covers the REMO model domain PLUS one row of
+ gridboxes outside the model domain along each side. You need an
+ additional band of one boundary box around your future REMO domain in
+ the surface library. Consequently, we have to add 2 grid boxes for each
+ dimension resulting in ``RESOLUTION_X`` and ``RESOLUTION_Y`` being
+ larger by 2 gridboxes than the actual grid of the REMO run. It is also
+ crucial to shift the coordinates for the lower left grid box center
+ (``LON_LL``, ``LAT_LL``) by one grid cell to the left and bottom
+ respectively. Note that in REMO and the BodLibKit, grid related
+ coordinates always denote the center of a grid box, e.g., (``LON_LL``,
+ ``LAT_LL``) denotes the coordinates of the center of the lower left grid
+ box and NOT the lower left corner of the model domain (which would be
+ shifted by another half of a grid box). If you are unsure, you can have
+ a look at the REMO user guide for a detailled example of how to create a
+ Surface Library with the BodLibKit.
 
 The parameter POL has to be set to 0 if none of the rotated poles lies
 within the model domain (usually this is the case). It has to be set to
@@ -640,12 +640,11 @@ will see some output similar to this:
     fline:    70.5384 iline=1200 ityp=12 JB=435 JL=391 Weight= 0.000000 reg: lat=  70.538 lon= 179.995 rot: lat=  57.344 lon=  11.003 
     ...
 
-**NOTE:** Running the first script might take some time. If the script
-fails due to some segmentation faul error, the reason might lie in an
-insufficient stack size. Setting the stack size to unlimited might often
-resolve this problem using, e.g,
-
-::
+.. warning:: Running the first script might take some time. If the script
+ fails due to some segmentation faul error, the reason might lie in an
+ insufficient stack size. Setting the stack size to unlimited might often
+ resolve this problem using, e.g,
+ ::
 
     ulimit -s unlimited
 
@@ -702,12 +701,12 @@ be something like this
      rechts oben   (rot):    18.70500         23.70500
     ...
 
-Note that running the script ``rotcoord.sh`` is not optional because it
-provides files that are used by other scripts! If you are happy with the
-result, you can run ``second.sh`` straight away. If you want the script
-to run faster have a look at ``gtopo30_tiles.gif``, choose tiles that
-are necessary for your domain and remove unnecessary .DEM files from
-``gtopo`` subdirectory.
+.. warning:: that running the script ``rotcoord.sh`` is not optional because it
+ provides files that are used by other scripts! If you are happy with the
+ result, you can run ``second.sh`` straight away. If you want the script
+ to run faster have a look at ``gtopo30_tiles.gif``, choose tiles that
+ are necessary for your domain and remove unnecessary .DEM files from
+ ``gtopo`` subdirectory.
 
 ::
 
