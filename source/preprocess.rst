@@ -231,7 +231,7 @@ library is the file with your surface boundary condition interpolated on
 to the model grid.
 
 Content of the Surface Library
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The surface library itself usually consists of a single srv-file (which
 is a special binary format) and contains the fields list in Table
@@ -269,8 +269,8 @@ is a special binary format) and contains the fields list in Table
 
 Table: Fields in the Surface Library
 
-The surface library file itself is usually named something like `lib_[NAME_OF_DOMAN]_frac`
-where `[NAME_OF_DOMAIN]` indicates the name of the domain of the
+The surface library file itself is usually named something like lib\_[NAME\_OF\_DOMAN]\_frac
+where [NAME\_OF\_DOMAIN] indicates the name of the domain of the
 surface library. The fields in this file are already interpolated to
 the correct model domain and resolution and they are required by REMO
 as surface boundary conditions. However, this file is not used
@@ -482,7 +482,7 @@ the South Pole coordinates as indicated in the config file. From version
 contain a land, a water and a sea ice fraction). Therefore, when
 carrying out simulations with a newer REMO version, the parameter IWATER
 has to be set to 1. For the fractional version, there are also modified
-scripts ending on `_frac.sh` that have to be executed (see below).
+scripts ending on \_frac.sh that have to be executed (see below).
 
 Running the setup.sh script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -570,7 +570,7 @@ configured:
                              #     WAVA and ICAP) will computed only based on non-
                              #     glaciated land fraction
 
-| By default parameters in the ``first.sh`` are defined for Baltex model
+By default parameters in the ``first.sh`` are defined for Baltex model
   domain. For this example, we put in the parameters for a grid that has
   a horizontal resolution of 0.11and that extends roughly over the
   Eurocordex domain with an appropriate grid rotation (Fig.
@@ -580,7 +580,7 @@ configured:
   grid box sizes. For model domains within or close to the tropics
   (close to the real-world-equator) a rotation of the grid is usually
   not necessary.
-| **NOTE:** The surface library covers the REMO model domain **PLUS**
+**NOTE:** The surface library covers the REMO model domain **PLUS**
   one row of gridboxes outside the model domain along each side. You
   need an additional band of one boundary box around your future REMO
   domain in the surface library. In this example, we plan to create the
@@ -648,10 +648,10 @@ will see some output similar to this:
 
     ulimit -s unlimited
 
-| If the script still fails to execute, it might be worth trying to use
+If the script still fails to execute, it might be worth trying to use
   a different C compiler in the ``system_settings.sh`` scripts, e.g.,
   the GNU Fortran compiler ``gfortran``.
-| If the first script runs successfully, it should finish with some
+If the first script runs successfully, it should finish with some
   output similiar to:
 
 ::
@@ -930,7 +930,7 @@ you want to use (e.g., ERA-INTERIM). However, the preprocessing of these
 g-files into a-files still has to be done by the user.
 
 Creating Global Files (g-files)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The preparation of global files stronlgy depends on the available global
 data. If the data comes from a GCM, one has to consult carefully the
@@ -944,7 +944,7 @@ their own model output data usually using different kinds of meta
 information or file formats.
 
 RemapToREMO - Creating Forcing Files (a-files)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forcing files (a-files) are created from g-files using the
 preprocesser. The preprocessor is a Fortran program that can read a
@@ -1047,7 +1047,7 @@ Table: Forcing Fields
 RemapToREMO
 ^^^^^^^^^^^
 
-The task of the REMO preprocessor (`RemapToREMO`) is to interpolate
+The task of the REMO preprocessor (RemapToREMO) is to interpolate
 the coarse resolution input forcing data to the resolution and (rotated)
 grid of the regional domain. The input forcing data are either from:
 
@@ -1060,7 +1060,7 @@ grid of the regional domain. The input forcing data are either from:
 The interpolated forcing data are combined with the surface data
 created with the bodlib toolkit (Section [sec:preproc:bodlib]) and are
 stored as a-files.
-The new preprocessor is now called `RemapToREMO`. It contains all
+The new preprocessor is now called RemapToREMO. It contains all
 neccessary source code to compile any preprocessor configuration
 including reanalysis with ERA-INTERIM, global model data that fullfils
 nc-conventions as well as a configuration for preparing remo output
@@ -1075,7 +1075,7 @@ Requirements
 ^^^^^^^^^^^^
 
 In present works only with intel compiler, so you have to have ifort in
-your `$PATH` variable. On DKRZ computers you can usually load intel
+your $PATH variable. On DKRZ computers you can usually load intel
 compiler by
 
 module load intel
