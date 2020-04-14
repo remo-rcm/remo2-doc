@@ -1047,7 +1047,7 @@ Table: Forcing Fields
 RemapToREMO
 ^^^^^^^^^^^
 
-The task of the REMO preprocessor (``RemapToREMO``) is to interpolate
+The task of the REMO preprocessor (`RemapToREMO`) is to interpolate
 the coarse resolution input forcing data to the resolution and (rotated)
 grid of the regional domain. The input forcing data are either from:
 
@@ -1059,8 +1059,8 @@ grid of the regional domain. The input forcing data are either from:
 
 The interpolated forcing data are combined with the surface data
 created with the bodlib toolkit (Section [sec:preproc:bodlib]) and are
-stored as **a**-files.
-The new preprocessor is now called ``RemapToREMO``. It contains all
+stored as a-files.
+The new preprocessor is now called `RemapToREMO`. It contains all
 neccessary source code to compile any preprocessor configuration
 including reanalysis with ERA-INTERIM, global model data that fullfils
 nc-conventions as well as a configuration for preparing remo output
@@ -1075,7 +1075,7 @@ Requirements
 ^^^^^^^^^^^^
 
 In present works only with intel compiler, so you have to have ifort in
-your ``$PATH`` variable. On DKRZ computers you can usually load intel
+your `$PATH` variable. On DKRZ computers you can usually load intel
 compiler by
 
 module load intel
@@ -1138,7 +1138,7 @@ The resulting executable is usually called ``preproc``
 PrepareAFiles - Running the preprocessor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| Once the preprocessor has been compiled successfully, it requires a
+Once the preprocessor has been compiled successfully, it requires a
   ``Fortran`` Input file containing a number of namelists to configure
   it, see table [tab:preproc\_input]. All g-files have to be located in
   a certain directory (``YGMCAT``) and the remapped data will be written
@@ -1152,7 +1152,7 @@ PrepareAFiles - Running the preprocessor
   Consequently, the time frequency of the double nesting approach
   depends on the time frequency in which data is written by the parent
   model run with ``REMO``.
-| However, a set of python scripts for controlling the preprocessor is
+However, a set of python scripts for controlling the preprocessor is
   availabe in the ``REMO`` tools suite and is called ``PrepareAFiles``.
   In particular the script do the following:
 
