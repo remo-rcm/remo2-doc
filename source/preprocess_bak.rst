@@ -1,3 +1,5 @@
+.. _cha_preprocessing:
+
 Preprocessing
 =============
 
@@ -106,11 +108,7 @@ possible places your driving data can come from:
 .. figure:: ./fig/REMO_workflow.png
    :alt: Overview of the general worfklow  
    :width: 80.0%
-
-   Overview of the general workflow for a user customated REMO
-   experiment.
-
-
+   
 However, the actual files containing results from a global model or a
 reanalysis run can neither be used as an input file for REMO nor the
 preprocessor directly. Instead, the data from the files has to be
@@ -229,11 +227,10 @@ library is the file with your surface boundary condition interpolated on
 to the model grid.
 
 Content of the Surface Library
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The surface library itself usually consists of a single srv-file (which
 is a special binary format) and contains the fields list in Table
-[tab:surflib].
 
 +--------+-----------+----------+--------------------------------------------+
 | Code   | Name      | Unit     | Description                                |
@@ -267,3 +264,610 @@ is a special binary format) and contains the fields list in Table
 
 Table: Fields in the Surface Library
 
+The surface library file itself is usually named something like lib\_[NAME\_OF\_DOMAN]\_frac
+where [NAME\_OF\_DOMAIN] indicates the name of the domain of the
+surface library. The fields in this file are already interpolated to
+the correct model domain and resolution and they are required by REMO
+as surface boundary conditions. However, this file is not used
+directly during the model run but rather indirectly. The surface
+library is used by the preprocessing of forcing data (Section
+[sec:preproc:forcing]) and is included in the forcing files.
+
+Data for the Mean Annual Cycle
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There are another three srv-files that contain the time-dependent mean
+annual cycles for the albedo (ALB), leaf area index (VLT) and vegetation
+ratio (VGRAT) (Table [tab:annual])
+
++--------+---------+----------+-----------------------------+
+| Code   | Name    | Unit     | Description                 |
++========+=========+==========+=============================+
+| 174    | ALB     | fract.   | surface background albedo   |
++--------+---------+----------+-----------------------------+
+| 198    | VGRAT   |          | vegetation ratio            |
++--------+---------+----------+-----------------------------+
+| 200    | VLT     |          | leaf area index             |
++--------+---------+----------+-----------------------------+
+
+Table: Fields for the Mean Annual Cycle
+
+There is a file for each field, usally named somthing like this:
+
+-  ``albyear_[NAME_OF_DOMAIN].srv``
+
+-  ``vgryear_[NAME_OF_DOMAIN].srv``
+
+-  ``vltyear_[NAME_OF_DOMAIN].srv``
+
+These files are used directly for the REMO model run and have to
+specified in the Input Namelist (see Appendix [cha:remo\_namelist]). The
+surface library and the files for the annual cycles are domain specific
+and have to be prepared for each model domain individually There is a
+number of surface libraries available from GERICS on MISTRAL at this
+location:
+
+.. code:: bash
+
+    /work/ch0636/surflibs/
+
+and the associated files for the mean annual cycle can be found here:
+
+.. code:: bash
+
+    /pool/data/remo/
+
+or ask for support from GERICS. A list of available model domains, for
+which surface data (and maybe even forcing data) is available, can be
+found in Appendix [cha:grid\_list]. However, in the following sections,
+we describe how to create these files for a new domain.
+
+Creating a new Surface Library
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The surface library is created by interpolating data from the GTOPO30
+global digital elevation model (DEM) to the REMO model grid. The
+interpolation is done by using
+
+-  shell-scripts, Fortan- and C-Programs (available from the REMO
+   gitlab)
+
+-  a global surface library and FAO-datasets (located at
+   /hpss/arch/ch0636/bodlib/input\_data/)
+
+-  global GTOPO orography (located at /hpss/arch/ch0636/bodlib/gtopo/)
+
+This collcetion of scripts and data is referred to as the *bodlibkit*.
+You can download it from the REMO gitlab at GERICS, e.g.,
+
+.. code:: bash
+
+    git clone http://git.gerics.de/REMO/BodLibKit.git
+
+Among others, the main directory contains these directories and files:
+
+.. code:: bash
+
+      /bin      # shell scripts
+      /config   # configuration files 
+      /data     # several binary data files (srv,dat,bin) 
+      /gtopo    # GTOPO30 global digital elevation model 
+      /GOOD     # fortran codes to read binary elevation data 
+      /src      # C source code for goodrot program
+      setup.sh  # shell script to setup a new surface library from a config file
+      
+
+Obtaining additional Datasets
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The surface library is created by interpolating data from the GTOPO30
+global digital elevation model (DEM) 3 and additional FAO-datasets to
+the REMO model grid. The interpolation is done by using a number of
+shell-scripts, Fortan- and C-Programs. These programs are partly created
+and compiled on the fly by the shell scripts.
+
+To create a new Surface Library, you first have to obtain the GTOPO30
+and FAO datasets. At GERICS, these can be found in the HPSS archive at
+DKRZ at a global surface library and FAO-datasets (located at
+``/hpss/arch/ch0636/bodlib/input_data``, and global GTOPO orography
+(located at ``/hpss/arch/ch0636/bodlib/gtopo``)
+
+.. code:: bash
+
+    /hpss/arch/ch0636/bodlib/input_data/gtopo.tar.gz            # GTOPO30 global elevation
+    /hpss/arch/ch0636/bodlib/gtopo/bodlib_input_data.tar.gz     # additional FAO datasets
+
+The GTOPO30 data is available in with different endianess (e.g., big and
+little endian) since these are binary files. However, the scripts will
+check for endianess and convert them if neccessary. Download these files
+from the HPSS archive (using ‘get‘) and untar them by using, e.g.
+
+.. code:: bash
+
+    tar -xzf bodlib_input_data.tar.gz 
+
+This data has to go into the ‘/data‘ subdirectory of the ‘BodLibKiT‘
+root directory. So it is advisable to untar this file directly in the
+‘data‘ subdirectory. So in addition to the data from the gitlab, the
+‘/data‘ subdirectory should contain these additional files:
+
+.. code:: bash
+
+       MSA0100_1996_DHR30.med 
+       MSA0100_1996_LAT.bin 
+       MSA0100_1996_LON.bin 
+       goge2_0g.img 
+       f_lim.dat
+
+The GTOPO30 data hast to be untarred directly in the ‘BodLibKit‘ root
+directory since these files will automaticall go into the gtopo
+subdirectory.
+
+.. code:: bash
+
+    tar -xzf gtopo.tar.gz 
+
+In the end, the gtopo subdirectory should contain about 33 elvevation
+data files, e.g.
+
+.. code:: bash
+
+    E020N40.DEM  E020S10.DEM  E060N90.DEM  E060S60.DEM ... 
+    
+
+Configuration
+^^^^^^^^^^^^^
+
+To setup a configuration for a new REMO domain, you can create a new
+config file in the ``config`` subdirectory. You can either copy one of
+the available configurations to a new file or use the
+``template.config`` file. However, your config file should get a short
+name by which it can easily be identified and it should be equal to the
+``EXP`` variable in the config file. In the end, you have to fill in the
+following parameters in the config file:
+
+.. code:: bash
+
+       EXP=                     # Name of the area
+       IWATER=1                 # 1=fractional surface library, 0=nonfractional
+       
+       RESOLUTION_X=            # Number of Longitudes
+       RESOLUTION_Y=            # Number of Latitudes
+       RESOLUTION=              # Resolution of destination grid
+       LON_LL=                  # Longitude of origin - dest. in rotated system
+       LAT_LL=                  # Latitude of origin - dest. in rotated system
+       #
+       # lon/lat coordinates of South Pole! If you have the North Pole available,
+       # you can compute the South Pole like this:
+       #
+       # LON_SP = LON_NP + 180 (even if it gets larger than 180 degrees)
+       # LAT_SP = -1 * LAT_NP 
+       #
+       LON_SP=                  # Longitude of South Pole - destination grid
+       LAT_SP=                  # Latitude of South Pole - destination grid
+       POL=0                    # Pole inside the domain
+                                # 0 = No, 1 = North Pole, 2 = South Pole
+       IGLAC=0                  # 0 = default
+                                # 1 = REMOglacier version: surface parameters (except
+                                #     WAVA and ICAP) will computed only based on non-
+                                #     glaciated land fraction
+
+.. note:: The surface library covers the REMO model domain PLUS one row of
+ gridboxes outside the model domain along each side. You need an
+ additional band of one boundary box around your future REMO domain in
+ the surface library. Consequently, we have to add 2 grid boxes for each
+ dimension resulting in ``RESOLUTION_X`` and ``RESOLUTION_Y`` being
+ larger by 2 gridboxes than the actual grid of the REMO run. It is also
+ crucial to shift the coordinates for the lower left grid box center
+ (``LON_LL``, ``LAT_LL``) by one grid cell to the left and bottom
+ respectively. Note that in REMO and the BodLibKit, grid related
+ coordinates always denote the center of a grid box, e.g., (``LON_LL``,
+ ``LAT_LL``) denotes the coordinates of the center of the lower left grid
+ box and NOT the lower left corner of the model domain (which would be
+ shifted by another half of a grid box). If you are unsure, you can have
+ a look at the REMO user guide for a detailled example of how to create a
+ Surface Library with the BodLibKit.
+
+The parameter POL has to be set to 0 if none of the rotated poles lies
+within the model domain (usually this is the case). It has to be set to
+1 (2) if the rotated North (South) Pole lies within the domain
+boundaries. Please be aware, that ``LON_SP`` and ``LAT_SP`` denote the
+coordinates of the South pole (NOT the North Pole). Usually the rotated
+REMO grid is defined by the North Pole and you have to convert these to
+the South Pole coordinates as indicated in the config file. From version
+5.1 on, REMO uses a fractional surface coverage (each grid box can
+contain a land, a water and a sea ice fraction). Therefore, when
+carrying out simulations with a newer REMO version, the parameter IWATER
+has to be set to 1. For the fractional version, there are also modified
+scripts ending on \_frac.sh that have to be executed (see below).
+
+Running the setup.sh script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The setup.sh script is supposed to setup a new directory named after
+``EXP`` (name of the are) in the BodLibKit root directory and to create
+a ``work`` and ``results`` directory. In addition, the script also
+creates links to all neccessary data in the ``EXP/work`` directory and
+copies the main shell scripts from the ``/bin`` directory to the ``EXP``
+directory. All you have to provide to the setups.sh script is your
+domain configuration file in the ``config`` directory, e.g,
+
+.. code:: bash
+
+    ./setup.sh <EXP.config>
+
+The script should also check if all neccessary data has been obtained
+from the HPSS archive and whether it is in the right place. After
+running the setup script successfully, the ``EXP`` directory should be
+available in the BodLibKit root directory.
+
+Creating the Surface Library
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After creating the setup directory, you can change to your ``EXP``
+directory and execute the scripts in the indicated order. Please be
+aware, that these scripts create and compile C and Fortran Code on the
+fly so you need to configure a compiler for these. The compiler is
+chosen in the ``system_setting.sh`` configuration script in the work
+subdirectory. There are some default configurations, e.g., for the
+Mistral the intel compiler is chosen. Make sure, you have a compiler
+available and set in the ``system_setting.sh``.
+
+Troubleshooting
+^^^^^^^^^^^^^^^
+
+As mentioned, the scripts of the surface library create C and Fortran
+Codes on the fly and compile it. These programs allocate their memory on
+the stack memory since they define their required memory at compilation
+time (automatic array). This might create trouble if the stack size on
+your system is limited. So if a script, especially the first.sh or
+second.sh, exists with, typically, a segmentation fault, you can try to
+unlimit the stack size. To remove the stack size limit on a non-Windows
+system (i.e. Linux, Unix or OSX), use one of the following commands.
+
+If you your shell is sh, bash or ksh use
+
+.. code:: bash
+
+    ulimit -s unlimited
+
+If your shell is csh, tcsh or zsh use:
+
+.. code:: bash
+
+    limit stacksize unlimited
+
+Step by Step Example
+~~~~~~~~~~~~~~~~~~~~
+
+In the following, we give a detailled example of how to configure the
+scripts of the BodLibKit and how to create a new surface library and the
+files for mean annual cycle. The first thing to do, is to configure the
+BodLibKit with your desired grid parameters (see Section
+[sec:grid\_params]) This is done in the header of the first script
+``first.sh``. In the header of the file, the following parameters can be
+configured:
+
+::
+
+    EXP=europa011            # Name of the area
+    IWATER=1                 # 1=fractional surface library, 0=nonfractional
+
+    RESOLUTION_X=435         # Number of Longitudes
+    RESOLUTION_Y=435         # Number of Latitudes
+    RESOLUTION=0.11          # Resolution of destination grid
+    LAT_LL=-24.035           # Latitude of origin - dest. in rotated system
+    LON_LL=-29.035           # Longitude of origin - dest. in rotated system
+    LAT_SP=-39.25            # Latitude of South Pole - destination grid
+    LON_SP=18.0              # Longitude of South Pole - destination grid
+    POL=0                    # Pol innerhalb des Gebietes
+                             # 0 = No, 1 = North Pole, 2 = South Pole
+    IGLAC=0                  # 0 = default
+                             # 1 = REMOglacier version: surface parameters (except
+                             #     WAVA and ICAP) will computed only based on non-
+                             #     glaciated land fraction
+
+By default parameters in the ``first.sh`` are defined for Baltex model
+  domain. For this example, we put in the parameters for a grid that has
+  a horizontal resolution of 0.11and that extends roughly over the
+  Eurocordex domain with an appropriate grid rotation (Fig.
+  [fig:rot\_grid]). The grid should be placed in a way that the rotated
+  equator approximately crosses the center of the model domain. This
+  would ensure a negligible meridional convergence and almost equal real
+  grid box sizes. For model domains within or close to the tropics
+  (close to the real-world-equator) a rotation of the grid is usually
+  not necessary.
+**NOTE:** The surface library covers the REMO model domain **PLUS**
+  one row of gridboxes outside the model domain along each side. You
+  need an additional band of one boundary box around your future REMO
+  domain in the surface library. In this example, we plan to create the
+  surface library for a REMO model domain with a resolution of 433x433
+  grid boxes (see the Appendix [app:domainsize]) and we have to add 2
+  grid boxes for each dimension resulting in ``RESOLUTION_X=435`` and
+  ``RESOLUTION_Y=435``. It is also crucial to shift the coordinates for
+  the lower left grid box center ``(LON_LL, LAT_LL)`` by one grid cell,
+  e.g. 0.11, to the left and bottom respectively so that the resulting
+  REMO model domain lies within the slightly larger domain of the
+  surface library. Note that in REMO, grid related coordinates always
+  denote the center of a grid box, e.g., ``(LON_LL, LAT_LL)`` denotes
+  the coordinates of the center of the lower left grid box and **NOT**
+  the lower left corner of the model domain (which would be shifted by
+  another half of a grid box).
+
+    **Example**: If you are applying a 1/2 degree resolution and your
+    lower left corner of a grid box should be at 20 degree west/40
+    degree south you have to define it as 20.25 west/40.25 south in the
+    ’first.sh’ - script. (It’s actually one gridbox more than one would
+    usually expect, because you need one boundary row at each side) (the
+    coordinates define the center of the gridbox. 20.25 west/40.25 south
+    means that the lower left corner of the gridbox in the lower left
+    corner of the model domain is at 20.5 west/40.5 south.)
+
+The parameter POL has to be set to 0 if none of the rotated poles lies
+within the model domain (usually this is the case). It has to be set to
+1 (2) if the rotated North (South) Pole lies within the domain
+boundaries. From version 5.1 on, REMO uses a fractional surface coverage
+(each grid box can contain a land, a water and a sea ice fraction).
+Therefore, when carrying out simulations with a newer REMO version, the
+parameter IWATER has to be set to 1. For the fractional version, there
+are also modified scripts ending on ``..._frac.sh`` that have to be
+executed (see below).
+
+Step 1
+^^^^^^
+
+After putting in the right grid parameters, the first script can be
+executed by running:
+
+::
+
+    ./first.sh
+
+Note that this script will also check for the endianess of the machine
+you are working on and, if neccessary, convert some binary files.
+Afterwards, it will compile and execute the ``good.exe`` program and you
+will see some output similar to this:
+
+::
+
+    Distance at ilnord: 0.013161 Distance at ilsued: 0.008993 
+    fline:    74.3025 iline=900 ityp=12 JB=435 JL=292 Weight= 0.000000 reg: lat=  74.303 lon= 179.991 rot: lat=  53.936 lon=   8.169 
+    fline:    73.0167 iline=1000 ityp=12 JB=435 JL=340 Weight= 0.000000 reg: lat=  73.017 lon= 179.995 rot: lat=  55.108 lon=   9.081 
+    fline:    71.7632 iline=1100 ityp=12 JB=435 JL=368 Weight= 31.000000 reg: lat=  71.763 lon= 179.986 rot: lat=  56.242 lon=  10.030 
+    fline:    70.5384 iline=1200 ityp=12 JB=435 JL=391 Weight= 0.000000 reg: lat=  70.538 lon= 179.995 rot: lat=  57.344 lon=  11.003 
+    ...
+
+.. warning:: Running the first script might take some time. If the script
+ fails due to some segmentation faul error, the reason might lie in an
+ insufficient stack size. Setting the stack size to unlimited might often
+ resolve this problem using, e.g,
+ ::
+
+    ulimit -s unlimited
+
+If the script still fails to execute, it might be worth trying to use
+  a different C compiler in the ``system_settings.sh`` scripts, e.g.,
+  the GNU Fortran compiler ``gfortran``.
+If the first script runs successfully, it should finish with some
+  output similiar to:
+
+::
+
+    ...
+    Erstelle neue Land-See-Maske
+    Erstelle Grads-Dateien
+    Ende des ersten Teil
+
+Step 2
+^^^^^^
+
+For the next step, the script ``rotcoord.sh`` has to be executed:
+
+::
+
+    ./rotcoord.sh
+
+The script creates corners and intervals of latitude and longitude in
+geographic coordinates. Among other things, this script will give
+information (standard output) on the four corners of the chosen model
+domain in real-world lat/lon coordinates.
+
+::
+
+    links unten  (norm) - lower left corner
+    rechts unten (norm) - lower right corner
+    links oben   (norm) - Upper left corner
+    rechts oben  (norm) - upper right corne
+
+With this information one can check whether the model domain has been
+correctly placed or not. For the Europe 0.11example, the output should
+be something like this
+
+::
+
+    ...
+             435           435
+               1           435
+     Max / Min      (WO):    69.04558        -48.28784    
+     Max / Min      (NS):    74.45499         21.14123    
+     links unten  (norm):   -10.37563         21.14123    
+     rechts unten (norm):    36.75190         24.34295    
+     links oben   (norm):   -48.28784         60.96326    
+     rechts oben  (norm):    69.04558         67.81503    
+     links unten   (rot):   -29.03500        -24.03500    
+     rechts oben   (rot):    18.70500         23.70500
+    ...
+
+.. warning:: that running the script ``rotcoord.sh`` is not optional because it
+ provides files that are used by other scripts! If you are happy with the
+ result, you can run ``second.sh`` straight away. If you want the script
+ to run faster have a look at ``gtopo30_tiles.gif``, choose tiles that
+ are necessary for your domain and remove unnecessary .DEM files from
+ ``gtopo`` subdirectory.
+
+::
+
+    ./second.sh &
+
+This program will compile and execute another C program that interpolate
+orography from the GTOPO30 elevation data. The output should look
+similar to
+
+::
+
+    !!!! 
+    !!!! The gtopo files exist and are correct build for this little Endian machine
+    !!!! 
+    gpolphi = 39.250000, gpollam = -162.000000
+    1. part for file: gtopo/W180N90.DEM, gj: 0 
+    1. part for file: gtopo/W180N90.DEM, gj: 1000 
+    1. part for file: gtopo/W180N90.DEM, gj: 2000 
+    1. part for file: gtopo/W180N90.DEM, gj: 3000 
+    ...
+    ...
+    2. part for file: gtopo/E120S60.DEM, gj: 2000 
+    2. part for file: gtopo/E120S60.DEM, gj: 3000 
+    Erstelle Grads-Dateien
+    Ende des zweiten Teils
+
+If the ``second.sh`` script finished successfully, one can view the
+result for the min, mean and max values of the orography with cdo:
+
+::
+
+    cdo info europa011_oro.srv
+
+and the output should be similar to this
+
+::
+
+    Level Gridsize    Miss :     Minimum        Mean     Maximum : Parameter ID                        
+        0   189225       0 :     -395.99      205.24      3587.7 : 129
+
+A good way of checking the interpolated and rotated orography data is by
+converting the srv file to netcdf and have a quick look with ``ncview``.
+The srv file can be converted using the REMO table of cdo with the
+following command:
+
+::
+
+    cdo -t remo -f nc copy europa011_oro.srv europa011_oro.nc
+
+The resulting orography data (FIB, code=129) can be plotted using
+
+::
+
+    ncview europa011_oro.nc
+
+and the result should look similar to Figure [fig:europa011]
+
+.. figure:: ./fig/europa011.eps
+   :alt: Orography Data (FIB, code=129) for the Eurocordex Domain with a
+   resolution of 0.11and how it should look like after the execution of
+   the ``second.sh`` script.
+   :width: 50.0%
+
+   Orography Data (FIB, code=129) for the Eurocordex Domain with a
+   resolution of 0.11and how it should look like after the execution of
+   the ``second.sh`` script.
+
+Step 3
+^^^^^^
+
+The third step is to create the FAO-soiltype-dataset for your domain.
+Start the scripts in the order:
+
+::
+
+    ./third.sh  
+    ./fourth.sh 
+
+If one of the poles is located inside the model domain, the scripts
+``third_b.sh`` and ``fourth_b.sh`` have to be used instead. Since the
+REMO5.7, the following scripts have to be used in their fractional
+version and the next script is executed using
+
+::
+
+    ./fifth_frac.sh
+
+Before REMO5.7, which had no fractional land, water and sea ice, use
+
+::
+
+    ./fifth.sh
+
+instead. Note that these scripts actually create, compile and execute
+Fortran code.
+
+Step 4
+^^^^^^
+
+In the fourth step, the script
+
+::
+
+    ./sixth_frac.sh
+
+or
+
+::
+
+    ./sixth.sh
+
+has to be executed respectively. This script finally creates the surface
+library ``lib_europa011_frac`` in IEG format. The content can be checked
+using cdo:
+
+::
+
+    cdo -t remo sinfo lib_europa011_frac
+
+which should give output similiar to
+
+::
+
+       File format : IEG  LITTLEENDIAN
+        -1 : Institut Source   Ttype    Levels Num    Points Num Dtype : Parameter ID
+         1 : MPIMET   REMO     instant       1   1    189225   1  F32  : 129.128       
+         2 : MPIMET   REMO     instant       1   1    189225   1  F32  : 172.128       
+         3 : MPIMET   REMO     instant       1   1    189225   1  F32  : 173.128       
+         4 : MPIMET   REMO     instant       1   1    189225   1  F32  : 174.128       
+         5 : MPIMET   REMO     instant       1   1    189225   1  F32  : 198.128       
+         6 : MPIMET   REMO     instant       1   1    189225   1  F32  : 199.128       
+         7 : MPIMET   REMO     instant       1   1    189225   1  F32  : 200.128       
+         8 : MPIMET   REMO     instant       1   1    189225   1  F32  : 212.128       
+         9 : MPIMET   REMO     instant       1   1    189225   1  F32  : 226.128       
+        10 : MPIMET   REMO     instant       1   1    189225   1  F32  : 229.128       
+        11 : MPIMET   REMO     instant       1   1    189225   1  F32  : 272.128       
+        12 : MPIMET   REMO     instant       1   1    189225   1  F32  : 273.128       
+        13 : MPIMET   REMO     instant       1   1    189225   1  F32  : 274.128       
+       Grid coordinates :
+         1 : lonlat                   : points=189225 (435x435)
+                                 rlon : -29.035 to 18.705 by 0.11 degrees
+                                 rlat : -24.035 to 23.705 by 0.11 degrees
+                            northpole : lon=-162  lat=39.25
+       Vertical coordinates :
+         1 : surface                  : levels=1
+       Time coordinate :  1 step
+      YYYY-MM-DD hh:mm:ss  YYYY-MM-DD hh:mm:ss  YYYY-MM-DD hh:mm:ss  YYYY-MM-DD hh:mm:ss
+      0017-02-28 12:00:00
+
+Note that the Grid coordinates should match the parameters that were set
+in the header of the ``first.sh`` script and that the codes (Parameter
+ID) should match the list in Table [tab:surflib].
+
+Step 5
+^^^^^^
+
+In the last step, the files for the mean annual cycle of the leaf area
+index, vegetation ratio and albedo are created by running
+
+::
+
+    ./vegcycle_1.sh
+    ./vegcycle_2.sh
+    ./albcycle.sh
+
+in this order. These scripts create the files ``vltyear_europa011.srv``,
+``vgryear_europa011.srv`` and ``albyear_europa011.srv``.
