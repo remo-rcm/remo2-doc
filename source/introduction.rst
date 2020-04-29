@@ -1,5 +1,4 @@
 
-
 .. _cha_introduction:
 
 Introduction [#phd_thesis]_
@@ -193,6 +192,9 @@ after :cite:`Charnock1955` with a minimum value for
 :math:`z_0` of :math:`\mathsf{1.5 \cdot 10^{-5} m}` with subsequent
 reduction of the heat transfer coefficient is applied. Over sea ice a
 constant value of :math:`z_0` = 0.001m is prescribed.
+
+Urban representation
+~~~~~~~~~~~~~~~~~~~~
 
 Vegetation and Land Use
 ~~~~~~~~~~~~~~~~~~~~~~~
