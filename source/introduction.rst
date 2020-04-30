@@ -1,4 +1,3 @@
-
 .. _cha_introduction:
 
 Introduction [#phd_thesis]_
@@ -193,8 +192,6 @@ after :cite:`Charnock1955` with a minimum value for
 reduction of the heat transfer coefficient is applied. Over sea ice a
 constant value of :math:`z_0` = 0.001m is prescribed.
 
-Urban representation
-~~~~~~~~~~~~~~~~~~~~
 
 Vegetation and Land Use
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -427,6 +424,18 @@ of glaciated REMO grid cells in the Alps is systematically
 underestimated. This fact is of major importance for the analysis of
 differences in the simulated atmospheric parameters between REMO 5.3 and
 (Chapter [chapter:results]).
+
+Urban representation
+~~~~~~~~~~~~~~~~~~~~
+Urban areas are a surface land sub-type in REMO. There is no sophisticated 
+parameterization scheme for urban areas nor an urban model. 
+The REMO model follows the so-called ‘bulk’-approach. 
+Sealed urban areas are represented as a rock surface, 
+which is described in the model by a relatively high roughness length, 
+high albedo, and no water storage capacities 
+(more information: Langendijk et al., 2019, https://doi.org/10.3390/atmos10120730).
+
+
 
 Numerics
 --------
