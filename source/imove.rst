@@ -95,3 +95,34 @@ be found from
 
    source/physics/land/Vegetation/VegetationMain/IMove/Vegetation.f90
 
+There are some minor changes throughout the IMove code. The final
+biggest change is in the namelist of IMove; it has now it's own
+namelist called ``IMOVECTL``. Here is an example of the namelist:
+::
+
+    &IMOVECTL
+    LIMOVELUC=.FALSE.,
+    YNAMPFT='GLC_2_PFT_translate_Holdrige_16_classes_correct_b',
+    YNAMZ0='173_EUR-044_b.nc',
+    YNAMSALB='REMO_iMOVE_backgrd_albedo_correct_b.nc',
+    YNAMROOT='ROOT_DEPTH_FOR_PFTS_16_classes_correct_b.nc',
+    YIMOVEP='/work/ch0636/g300096/IMove/044'
+    /
+
++------------+-------------+---------------+-------------------------------------------------------------------------------+
+| Namelist   | Parameter   | Default value | Description                                                                   |
++============+=============+===============+===============================================================================+
+| IMOVECTL   | LIMOVELUC   | FALSE         | Are land use changes                                                          |
++------------+-------------+---------------+-------------------------------------------------------------------------------+
+|            | YNAMPFT     | ' '           | Name of PFT file (NetCDF file)                                                |
++------------+-------------+---------------+-------------------------------------------------------------------------------+
+|            | YNAMZ0      | ' '           | Name of roughness length file (NetCDF file)                                   |
++------------+-------------+---------------+-------------------------------------------------------------------------------+
+|            | YNAMSALB    | ' '           | Name of albedo file (NetCDF file)                                             |
++------------+-------------+---------------+-------------------------------------------------------------------------------+
+|            | YNAMROOT    | ' '           | Name of root depth file (NetCDF file)                                         |
++------------+-------------+---------------+-------------------------------------------------------------------------------+
+|            | YIMOVEP     | ' '           | Path to IMove input files                                                     |
++------------+-------------+---------------+-------------------------------------------------------------------------------+
+
+Table: Namelist Parameters for the IMove vegetation model
