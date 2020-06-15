@@ -218,14 +218,28 @@ preprocessing. The most important settings are the following:
   used, FALSE for constant greenhouse gas concentrations) have to be
   set.
 
+.. topic:: ``DYNCTL``
+
+   Here the dynamics setting can be changed. ``IWETCORE`` tell how the
+   wet advection should be handled in the model (0 for default
+   approach, 1 if only horizontal explicit advection is wanted and 2
+   if both horizontal and vertical explicit advection is wanted)
+  
 .. topic:: ``PHYCTL``
 
-  Adjust the switches ``LVEG`` (``TRUE`` if monthly varying
-  vegetation fields are to be used, ``FALSE`` if not), ``LSICED`` (``TRUE`` if the
-  forcing contains sea ice concentrations, FALSE if not and if the sea
-  ice concentration should be diagnosed from ``SST``) and ``LAEROZ`` (``TRUE`` if
-  time dependent aerosol and ozone background concentrations are to be
-  used, ``FALSE`` if constant background concentrations are used).
+  Adjust the switches ``LVEG`` (``TRUE`` if monthly varying vegetation
+  fields are to be used, ``FALSE`` if not), ``LSICED`` (``TRUE`` if
+  the forcing contains sea ice concentrations, FALSE if not and if the
+  sea ice concentration should be diagnosed from ``SST``), ``LMLSN``
+  (``TRUE`` if 3-layer snow module is to be used, ``FALSE`` if not),
+  ``LSNNIR`` (``TRUE`` if VIS/NIR separation for snow abledo is to be
+  used, ``FALSE`` if not), ``SNALB`` (0.0 for default remo snow
+  albedo, 1.0 for BATS snow albedo, between 0.0 and 1.0 weight between
+  default and BATS), ``IAERCLI`` (0 for Tanre climatology, 1 for MACv2
+  climatology + online anthropogenic aerosols, and 2 same as 1, but
+  with 1st indirect effect included), ``LPROGP`` (``TRUE`` if
+  prognostic precipitation is to be used, ``FALSE`` if not) and
+  ``RAWA`` (Robert-Asselin-Williams time filter factor (alpha)).
 
 .. topic:: ``DATEN``
   
@@ -282,6 +296,8 @@ preprocessing. The most important settings are the following:
 +------------+-------------+-----------------------------------------------------------------------------------+
 |            | DNOPRC      | Cloud height over ocean that has to be reached at least before a cloud may rain   |
 +------------+-------------+-----------------------------------------------------------------------------------+
+| DYNCTL     | IWETCORE    | 0: default, 1: only explicit h-advection, 2: explicit h+v-advection               |
++------------+-------------+-----------------------------------------------------------------------------------+
 | PHYCTL     | LPHY        | TRUE if REMO physics should computed                                              |
 +------------+-------------+-----------------------------------------------------------------------------------+
 |            | HDRAD       | Time intervall for radiation calculations                                         |
@@ -290,9 +306,27 @@ preprocessing. The most important settings are the following:
 +------------+-------------+-----------------------------------------------------------------------------------+
 |            | LSICED      | TRUE if forcing file contains sea ice concentration                               |
 +------------+-------------+-----------------------------------------------------------------------------------+
-|            | LAEROZ      | TRUE if time dependent aerosol and ozone concentrations are used                  |
-+------------+-------------+-----------------------------------------------------------------------------------+
 |            | L5LAY       | TRUE if 5 soil layer model should be used                                         |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | LMLSN       | TRUE if 3-layer snow module should be used                                        |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | LSNNIR      | TRUE if VIS/NIR separation should be used                                         |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | LPROGP      | TRUE if prognostic precipitation should be used                                   |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | RAWA        | Robert-Asselin-Williams time filter factor (alpha)                                |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | SNALB       | 0.0 for default snow albedo, 1.0 for BATS, in between weight between def. and BATS|
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | IAERCLI     | 0: Tanre, 1: MACv2 + anthropogenic module, 2: like 1 + 1st indirect effect        |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | YMACAEFP    | PATH TO MAC CLIMATOLOGY FILES                                                     |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | YMACAEAFN   | MAC anthropogenic aerosol file name                                               |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | YMACAENFN   | MAC natural climatology file name                                                 |
++------------+-------------+-----------------------------------------------------------------------------------+
+|            | YMACAELFN   | MAC long-wave climatology file name                                               |
 +------------+-------------+-----------------------------------------------------------------------------------+
 | DATEN      | YADEN       | Experiment number of the input data                                               |
 +------------+-------------+-----------------------------------------------------------------------------------+

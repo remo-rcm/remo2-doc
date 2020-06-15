@@ -8,3 +8,4 @@ Contents:
 
    imove
    fesom2
+   flake

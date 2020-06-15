@@ -24,13 +24,14 @@ Contents:
    externals
    appendix
    syntax-examples
-
+   zzbibliography
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`search`
+   
 
 Contribute to the Documentation!
 ================================

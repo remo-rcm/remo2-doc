@@ -565,6 +565,246 @@ Possible numbers of gridboxes are:
 
 (script for creating magic numbers is available in the BodLibKit)
 
+How to add a new tile
+---------------------
+
+By default, REMO has 3 tiles land, sea and sea ice (active tiles). The
+structure for tiles is fully automatic in the sense that tile mean/sum
+variables are calculated over all tiles. Adding a new tile is not
+totally automatic and needs few steps. Also, there are two possible
+ways to add a new tile: active and passive approach. In active
+approach (currently the default 3 tiles) the tile will be always part
+of the calculations. In passive approach, the support for tile
+calculation is built, but it is being activated manually; for example,
+lake tile is a passive tile: the model has all the necessary code
+inside and it uses lake it only if lake model is active. Passive mode
+is the recommended approach for implementing a new tile. If active
+approach is chosen, please consult first with REMO developer team.
+
+First of all, the default number of tiles is set in:
+::
+
+   source/physics/land/Surface/SurfaceMain/EC4/kernel/mo_surface.f90
+   INTEGER :: NFRAC=3
+
+This should not be changed unless a new active tile is
+introduced. What needs to be changed for both approaches is the
+maximum number of tiles in: ::
+
+   source/physics/land/Surface/SurfaceMain/EC4/fraction/mo_fraction.f90
+   INTEGER, PARAMETER :: NFRAC_MAX = 4
+
+Currently (2020) there are 4 possible tiles: land, sea, sea ice and
+lakes. If the lake model (see :numref:`sec_flake`) is active, the
+fourth tile is activated.
+
+The next step is to add the fraction index to the list of possible
+fraction:
+::
+
+   source/physics/land/Surface/SurfaceMain/EC4/kernel/mo_surface.f90
+   ! Definition of surface fractions
+   ! First the defaults ones:
+   INTEGER, PARAMETER :: FR_SURFACE   = 0, FR_MEAN = 0, &
+                         FR_LAND      = 1, &
+                         FR_SEAWATER  = 2, &
+                         FR_SEAICE    = 3
+   ! Next here are possible additional tiles (add here new ones and
+   ! setup them in their own setup modules). Give -1 by default:
+   INTEGER ::            FR_LAKE      = -1
+
+Here we can see how the lake index FR_LAKE is set to be by default a
+passive tile (index -1). If the tile one wants to add is an active
+tile, then the index can be set directly (like with FR_LAND,
+FR_SEAWATER and FR_SEAICE).
+
+If the new tile changes the fraction of any existing tile, this has to
+be set in the tile update routine(s). The approach depends on whether
+the new tile is active or passive. If it is active, it is sufficient
+enough to change the subroutine ``update_default_fractions`` in
+::
+
+   source/physics/land/Surface/SurfaceMain/EC4/fraction/mo_fraction.f90
+
+If the new tile is passive, one can follow the implementation of
+FLake. First create an empty update routine (in your destination
+folder) similarly as with lake implementation:
+::
+
+   source/physics/land/Lake/update_lake_fraction.f90
+
+Next, set up the call for this routine:
+::
+
+   source/physics/land/Surface/SurfaceMain/EC4/fraction/mo_fraction.f90
+   subroutine update_fractions
+     !
+     ! This subroutine updates the fraction related variables from the
+     ! forcing data (if available). All tiles are updated even though
+     ! they stay constant during a simulation (thus keeping the support
+     ! for later implementations where the currently constant fraction
+     ! of a tile can change)
+     !
+     ! First the default fractions
+     call update_default_fractions
+     !
+     ! Second lakes (if present)
+     call update_lake_fraction
+     !
+   end subroutine update_fractions
+
+Create the update routine (to your destination folder) that will be
+called when the new tile is active: ::
+
+   source/physics/land/Lake/LakeMain/FLake/update_lake_fraction.f90
+
+Take care that all real fraction values and logical fraction switches
+are updated according to your changes.
+
+Next step is the most complicated one. The vertical diffusion routine
+works differently for different tiles and we have to set up the tiles
+according to their specifications. Again, there are two possible ways
+to do this: active or passive approach. In the active approach, the
+changes should be done in
+::
+
+   source/physics/atmosphere/VerticalDiffusion/VerticalDiffusionMain/EC4/mo_vertical_diffusion.f90
+
+What this file provides are the default subroutines for the land, sea
+and sea ice tiles. Whenever possible, the same subroutine is used for
+sea and sea ice tiles and in these case the ``_h2o`` suffix is used
+(otherwise the suffix is the tile name). Similarly, if a passive
+tile is introduced, the vertical diffusion routines need to be
+implemented. Lake implementation has this and can be found from
+::
+
+   source/physics/land/Lake/LakeMain/FLake/kernel/mo_flake_vdiff.f90
+
+In this file, those subroutines that lake tile cannot use from the
+default configuration (``mo_vertical_diffusion.f90``) are
+introduced. When adding a new tile, one should always check if the
+existing vertical diffusion routines can be used and when not, write
+the new ones.
+
+Before looking in details what is actually needed for vertical
+diffusion, the linking process is explained. Each tile has some
+function pointers (in our case subroutine pointers) that need to be
+set. The list of these pointers can be found from type definition
+``TYPE :: surface_fraction`` which is located in
+::
+
+   source/physics/land/Surface/SurfaceMain/EC4/fraction/mo_fraction.f90
+
+The list is as follows:
+::
+
+   ! Subroutine/Function pointers:
+   !
+   ! Dampfdruckes
+   procedure(DaFu), pointer, nopass :: vdiff_DaFu => NULL()
+   ! Surface humidity and virtual temperature
+   procedure(HumVt), pointer, nopass :: vdiff_shvt => NULL()
+   ! Wind increment
+   procedure(wincr), pointer, nopass :: vdiff_wincr => NULL()
+   ! Exchange coefficients
+   procedure(exchgcargs), pointer, nopass :: vdiff_exchgcoeff => NULL()
+   ! Roughness length
+   procedure(rlength), pointer, nopass :: vdiff_rlength => NULL()
+   ! Latent heat
+   procedure(lahe), pointer, nopass :: vdiff_lahe => NULL()
+   ! Heat flux
+   procedure(hflux), pointer, nopass :: vdiff_hflux => NULL()
+
+The pointers are nullified (``=> NULL()``) by default. In
+::
+
+   source/physics/land/Surface/SurfaceMain/EC4/fraction/init_fractions.f90
+
+the actual subroutines from ``mo_vertical_diffusion.f90`` are
+linked. Here are a couple of examples:
+::
+
+   ! Dampfdruckes
+   srf_cells(FR_LAND    )%vdiff_DaFu  => DaFu_land
+   srf_cells(FR_SEAWATER)%vdiff_DaFu  => DaFu_seawater
+   srf_cells(FR_SEAICE  )%vdiff_DaFu  => DaFu_seaice
+   
+   ! Surface humidity and virtual temperature
+   srf_cells(FR_LAND    )%vdiff_shvt  => humVtem_land
+   srf_cells(FR_SEAWATER)%vdiff_shvt  => humVtem_h20
+   srf_cells(FR_SEAICE  )%vdiff_shvt  => humVtem_h20
+
+Similarly, in
+::
+   
+   source/physics/land/Lake/LakeMain/FLake/Lake_init.f90
+
+the lake tile related subroutines from ``mo_flake_vdiff.f90`` are
+linked, for example:
+::
+   
+   ! Dampfdruckes function
+   srf_cells(FR_LAKE)%vdiff_DaFu  => DaFu_lake
+   !
+   ! Surface humidity and virtual temperature
+   srf_cells(FR_LAKE)%vdiff_shvt  => humVtem_h20
+
+Now we go through in details the list of subroutines that needs to be
+linked (all default ones in ``mo_vertical_diffusion.f90``). First on
+is the ``vdiff_DaFu``. This subroutine tells what is the vapor
+pressure over the tile's surface. For all current tiles basically a
+check of whether the surface is frozen (vapor pressure over ice) or
+not (over water).
+
+Next is the subroutine ``vdiff_shvt`` which calculates the surface
+humidity and virtual potential temperature. Here noticeable is that
+for land tile the calculation differs significantly.
+
+Subroutine ``vdiff_wincr`` calculates the surface roughness length for
+heat.
+
+Subroutine ``vdiff_exchgcoeff`` is used to calculate the exchange
+coefficients.
+
+Subroutine ``vdiff_rlength`` is for updating the surface roughness length.
+
+Subroutine ``vdiff_lahe`` sets the coefficient for latent heat in
+surface-atmosphere phase change
+
+Finally, subroutine ``vdiff_hflux`` set the correct method for overall
+calculation of heat fluxes of the tile.
+
+After all these subroutines are linked (or made and linked), the new
+tile is ready for use. There is, however, one thing that needs to be
+done if one want any output. All tile-wise variables are defined in
+the type ``TYPE :: surface_fraction`` in ``mo_fractions.f90``. By
+default there is not output for any of these variables. The current
+I/O does not support directly the ``TYPE`` defined variable(s) and the
+output variables have to be defined separately and linked (using
+pointers) to the corresponding ``TYPE`` variable. Many of the output
+variables are set in
+::
+
+   source/Memory/MemoryMain/mo_memory_main.f90
+
+and they are linked in
+::
+
+   source/physics/land/Surface/SurfaceMain/EC4/fraction/init_fractions.f90
+
+For passive approach one can follow again the FLake implementation,
+where the output variables are defined in
+::
+
+   source/physics/land/Lake/LakeMain/FLake/kernel/mo_memory_flake.f90
+
+and linked in
+::
+
+   source/physics/land/Lake/LakeMain/FLake/Lake_init.f90
+
+
+   
 .. [1]
    based on “Running REMO at Ouranos” by Sven Kotlarski
 

@@ -65,18 +65,20 @@ The atmospheric prognostic variables of REMO are the horizontal wind
 components, surface pressure, temperature, specific humidity and cloud
 liquid water. The temporal integration is accomplished by a leap-frog
 scheme with semi-implicit correction and time filtering after
-:cite:`Asselin1972`. In the vertical, variations of the
-prognostic variables (except surface pressure) are represented by a
-hybrid vertical coordinate system :cite:`Simmons1981`. For
-horizontal discretisation REMO uses a spherical Arakawa-C grid in which
-all variables except the wind components are defined in the centre of
-the respective grid box. The grid box centres themselves are defined on
-a rotated latitude-longitude coordinate system. In its standard setup,
-REMO uses a horizontal grid spacing of or , corresponding to horizontal
-resolutions of about 18 km and 55 km, respectively. The time step length
-is usually set to 100 seconds in the first case and to 240 seconds in
-the latter. Recently, also simulations using higher resolutions of about
-10 km have been successfully carried out (D. Jacob, pers. comm.).
+:cite:`Asselin1972` (please also see :numref:`sec_asselin`). In the
+vertical, variations of the prognostic variables (except surface
+pressure) are represented by a hybrid vertical coordinate system
+:cite:`Simmons1981`. For horizontal discretisation REMO uses a
+spherical Arakawa-C grid in which all variables except the wind
+components are defined in the centre of the respective grid box. The
+grid box centres themselves are defined on a rotated
+latitude-longitude coordinate system. In its standard setup, REMO uses
+a horizontal grid spacing of or , corresponding to horizontal
+resolutions of about 18 km and 55 km, respectively. The time step
+length is usually set to 100 seconds in the first case and to 240
+seconds in the latter. Recently, also simulations using higher
+resolutions of about 10 km have been successfully carried out
+(D. Jacob, pers. comm.).
 
 As described in :numref:`cha_preprocessing`, the lateral boundary
 conditions can either be provided by a GCM simulation or by re-analysis
@@ -220,6 +222,8 @@ in each grid box has been introduced by :cite:`Rechid2006`.
 Soil Processes
 ~~~~~~~~~~~~~~
 
+.. _sec_heatbudget:
+
 Heat Budget
 ^^^^^^^^^^^
 
@@ -293,6 +297,13 @@ physiological characteristics (see :numref:remo\_surface\_cover]).
 Snow Cover
 ~~~~~~~~~~
 
+REMO has two separate approached for snow cover calculations. Here,
+both will be introduced and the main features will be shown. Once can
+choose to use the REMO's original approach or a 3-layer snow module.
+
+Original snow module
+^^^^^^^^^^^^^^^^^^^^
+
 .. _fig_snow_layers:
 
 .. figure:: ./fig/snow_layers.png
@@ -321,6 +332,55 @@ or energy input is used for snow melt. Snow density and heat
 conductivity depend on the snow temperature :math:`T_{sn}` with both
 parameters increasing with rising temperatures.
 
+
+3-layer snow module
+^^^^^^^^^^^^^^^^^^^
+
+In remo2, it is possible to use a 3-layer snow module. It calculates
+snow heat conductivity using 3 layers. The first two - the top and
+middle layer - have fixed maximum thickness of 0.02 m in snow-water
+equivalent (weq) (~10 cm of snow). The bottom layer thickness is not limited
+and it can grow freely. There is, however, a cutting thickness of 10 m
+weq. If the 3-layer snow module is switched off, the first layer
+operates like the original REMO approach for snow. Also, for thin snow
+layers the 3-layer snow module uses default approach.
+
+The 3-layer snow module assumes that all surface related heat fluxes
+(radiation, sensible heat etc.) influence only the first layer. Unlike
+in the original approach, the heat diffusion between all snow layers
+and soil layers is calculated with the same approach as for default
+soil (see :numref:`sec_heatbudget`).
+
+In the original REMO approach for snow both the snow density and snow
+heat conductivity are functions of snow temperature. For 3-layer snow
+module, this has been changed. The snow density is based on snow aging
+:cite:`Verseghy1991`. How the 3-layer works in this case is that
+falling snow has a density of 50 kg/m\ :sup:`3` and it goes to the top
+layer. If there is already snow in the top layer, a new snow density
+is calculated first (snow density is a function of time step) and then
+an arithmetic mean for the layer density is calculated using snow fall
+and top layer thicknesses as weights. If the 1st layer thickness goes
+above the layer max thickness limit, extra amount of snow is "pushed"
+to the middle layer (where - if old snow exists - new snow density is
+calculate for old snow and arithmetic mean is used for the final layer
+density). The same is applied also for the bottom layer if middle
+layer snow maximum is reached. In any case, a new snow density is
+always calculated (snow ages). The maximum snow density (very old
+snow) is set to 450 kg/m\ :sup:`3`. In short, snow fall causes snow to be
+"pushed" downwards and layer snow density is calculated based on aging
+of old snow and the density of new snow in the layer.
+
+The snow heat conductivity in 3-layer snow module is based on snow
+density :cite:`Riche2013`. In the original approach the snow heat
+conductivity decreased as temperature decreased, but the new one only
+checks the density and calculated the conductivity based on it.
+
+Snow Albedo
+~~~~~~~~~~~
+
+REMO has two different snow albedo calculation methods. They can be
+used separately, or together with a weighting factor.
+
 .. _fig_snow_albedo:
 
 .. figure:: fig/snow_albedo.png
@@ -330,24 +390,25 @@ parameters increasing with rising temperatures.
    temperature :math:`T_S` and forest fraction :math:`f_{forest}` in a
    REMO grid box.
 
-The snow albedo :math:`\alpha_{snow}` is a function of the snow surface
-temperature :math:`T_S` and of the forest fraction :math:`f_{forest}` in
-a grid :math:`\alpha_{snow,max}`. For -10 :math:`\ \le\ T_S\ \le\ ` 0 it
-decreases linearly until the minimum value of :math:`\alpha_{snow,min}`
-is reached at :math:`T_S` = 0 (:numref:`fig_snow_albedo`). This
-dependency on snow temperature accounts for the fact that wet snow
-usually has a higher temperature and a lower albedo than completely
-frozen snow :cite:`\[][see also Chapter
+In the original approach, the snow albedo :math:`\alpha_{snow}` is a
+function of the snow surface temperature :math:`T_S` and of the forest
+fraction :math:`f_{forest}` in a grid :math:`\alpha_{snow,max}`. For
+-10 :math:`\ \le\ T_S\ \le\ ` 0 it decreases linearly until the
+minimum value of :math:`\alpha_{snow,min}` is reached at :math:`T_S` =
+0 (:numref:`fig_snow_albedo`). This dependency on snow temperature
+accounts for the fact that wet snow usually has a higher temperature
+and a lower albedo than completely frozen snow :cite:`\[][see also
+Chapter
 \ref{sec:surface_albedo}]{hall_jclim:2004}`. :math:`\alpha_{snow,max}`
 and :math:`\alpha_{snow,min}` in turn depend on the forest fraction
 :math:`f_{forest}` and vary from 0.4 to 0.8 and from 0.3 to 0.4
 respectively (with the lower value for :math:`f_{forest}=1` and the
 higher value for :math:`f_{forest}=0`).
 
-The final albedo of a snow covered land surface :math:`\alpha_{surf}` is
-a function of the background albedo :math:`\alpha_b` (see Chapter
+The final albedo of a snow covered land surface :math:`\alpha_{surf}`
+is a function of the background albedo :math:`\alpha_b` (see Chapter
 [sec:remo\_vegetation]), the snow albedo :math:`\alpha_{snow}` and the
-actual snow depth :math:`Sn`:
+actual snow depth :math:`Sn`: 
 
 .. math::
 
@@ -356,8 +417,39 @@ actual snow depth :math:`Sn`:
    \frac{Sn}{Sn\ +\ Sn^{\ast}}
 
 with a critical snow depth :math:`Sn^{\ast}` = 0.01and
-:math:`\alpha_{surf}` approaching :math:`\alpha_{snow}` for
-:math:`Sn \gg Sn^{\ast}`.
+:math:`\alpha_{surf}` approaching :math:`\alpha_{snow}` for :math:`Sn
+\gg Sn^{\ast}`. The same albedo is used for visible (VIS) and
+near-infrared (NIR) regions of the radiation spectrum.
+
+It is also possible to change how the snow albedo is calculated. In
+all methods, the forest fraction and snow depths influences the snow
+albedo as explained above. Alternative method for the temperature
+dependent snow albedo is to use the Biosphere–Atmosphere Transfer
+Scheme BATS :cite:`Dickinson1993,Yang1997`. In this scheme, the snow
+albedo takes into account the aging of snow, solar zenith angle and is
+calculated separately for VIS and NIR (in REMO one can choose if
+VIS/NIR separation is used or are the modified VIS values used for
+both; modified means here that certain limits are changed so that the
+VIS albedo represent "a broadband albedo"). The aging of snow is based
+on three terms: the first represents the effect on snow grain growth
+due to vapor diffusion, the second represents the additional effect
+near and at freezing of meltwater and finally the third introduces the
+influence of soot and dirt through a global time-independent constant
+:cite:`Dickinson1993,Pietikainen2018`.
+
+The temperature-dependent scheme aims to describe the reversible
+changes in the crystal structure of snow when the temperatures
+approach the melting point. On the other hand, the BATS scheme
+describes the irreversible crusting of a snow layer and the
+accumulation of aerosols and other impurities in the snow through the
+aging factor. As these are both important in reality, both schemes can
+be used together. This is a similar approach is in JSBACH model
+:cite:`Raddatz2007,Brovkin2013,Reick2013`.
+
+It should be noted that if the lake model FLake is active, both snow
+albedo schemes can be used similarly to calculate the snow albedo over
+frozen lakes. The forest fraction and snow depth (background albedo)
+won't influence the albedo over lakes.
 
 
 Glaciers
@@ -384,22 +476,24 @@ cell on the European Continent is considered as being glaciated (Figure
 
    Static glacier mask used in a standard REMO simulation over Europe.
 
-Grid boxes marked as “glacier” are assumed to be totally covered by ice.
-The soil heat equations are solved for five layers, but assuming the thermal characteristics of ice. The
-process of runoff generation on glacier ice is neglected. Both surface
-runoff and drainage are set to zero in each time step. A snow pack on
-top of the ice surface is not considered and therefore also snow melt
-does not occur. Consequently, the water balance of these grid boxes is
-not closed: The amount of solid and liquid precipitation does neither
+Grid boxes marked as “glacier” are assumed to be totally covered by
+ice.  The soil heat equations are solved for five layers, but assuming
+the thermal characteristics of ice. The process of runoff generation
+on glacier ice is neglected. Both surface runoff and drainage are set
+to zero in each time step. A snow pack on top of the ice surface is
+not considered and therefore also snow melt does not
+occur. Consequently, the water balance of these grid boxes is not
+closed: The amount of solid and liquid precipitation does neither
 accumulate on the surface nor run off but is simply lost. In the model
 output, the snow depth does remain at its initial value larger than
 9.5(which is important if double nesting is applied and a glacier mask
 must also be derived for a subsequent model simulation at higher
 resolution). Similarly to the snow albedo on the land fraction of
-non-glaciated boxes, the albedo of a glaciated grid box is a function of
-the surface temperature :math:`T_S` (see :numref:`fig_snow_albedo`),
-varying between :math:`\alpha_{ice,max}` = 0.8 (for :math:`T_S \le `
--10) and :math:`\alpha_{ice,min}` = 0.6 (for :math:`T_S` = 0).
+non-glaciated boxes, the albedo of a glaciated grid box is a function
+of the surface temperature :math:`T_S` (see
+:numref:`fig_snow_albedo`), varying between :math:`\alpha_{ice,max}` =
+0.8 (for :math:`T_S \le ` -10) and :math:`\alpha_{ice,min}` = 0.6 (for
+:math:`T_S` = 0).
 
 Also in grid boxes marked as “non-glaciated” (GLAC=0), surface ice cover
 is in principle accounted for via its proportional contribution to the
@@ -549,6 +643,124 @@ modifications after :cite:`Nordeng1994`. It has been
 modified for chemical tracers in the frame of this study. This is
 described in .
 
+Aerosol Climatology
+-------------------
+
+In the default configuration of REMO, the radiation module uses Tanre
+aerosol climatology :cite:`Tanre1984'. This climatology is old and has
+many deficiencies, for example too high values over North-Africa and
+Europe. REMO nowadays also includes an alternative climatology: MAC-v2
+for natural aerosols and long-wave (LW) absorption :cite:`Kinne2019`
+with an online anthropogenic aerosol module :cite:`Stevens2017`. The
+climatology also includes the possibility to use a factor, which
+represents the 1st indirect effect.
+
+.. _fig_eu_AOD_EUR-11_aatrs_remo:
+
+.. figure:: ./fig/eu_AOD_EUR-11_aatrs_remo.png
+
+   The Seasonal mean aerosol optical depth AOD (550 nm) for 2005 from
+   AATRS satellite and from REMO when using Tanre and MAC-v2
+   climatologies.
+
+:numref:`fig_eu_AOD_EUR-11_aatrs_remo` shows how the two climatologies
+in REMO compare to AATRS satellite measurement for different year 2005
+seasons. It is clear that the old Tanre is highly overestimating the
+aerosol optical depth (AOD) values.
+
+The model calculated vertical profile for both climatologies
+similarly. However, the spatial distribution differs significantly:
+Tanre is constant in time whereas Mac-v2 has monthly natural AOD and
+total long-wave files (no year-to-year variation) and an online-module
+that calculates the anthropogenic AOD. The anthorpogenic part varies
+from year-to-year and can be also used with scenario forcing.
+
+.. _sec_wetcore:
+
+Wet Advection
+-------------
+
+The dynamical core in REMO handles the transport of tracer-like
+species, such as humidity, cloud water and cloud ice. The core itself
+is not mass-conserving and this has been taken into account by using a
+mass-fixer.
+
+REMO has now the possibility to activate a "wetcore". This is based on
+the earlier work with interactive aerosols :cite:`Pietikainen2012` and
+it utilizes the Smolarkiewicz explicit horizontal and vertical
+advection approach :cite:`Smolarkiewicz1983,Smolarkiewicz1984`. The
+scheme is mass conserving, positive definite and computationally
+efficient. The monotonicity is achieved by using higher order flux
+corrections. We also use corrective steps (using antidiffusion
+velocity) in order to decrease the numerical diffusion.
+
+When wetcore is used (either only for horizontal advection or for both
+horizontal and vertical) the following species are transported:
+humidity, cloud water and cloud ice. If the prognostic precipitation
+is used, also the precipitation species (rain and snow) are
+transported.
+
+
+
+Prognostic Precipitation
+------------------------
+
+The large-scale (stratiform) cloud scheme in REMO calculates the
+cloud-processes in every time step. This means that the precipitation
+will be also calculated from top-down during one time step. This
+approach is not optimal and becomes more and more erroneous while time
+step decreases. To overcome this issue, a prognostic precipitation
+approach was implemented to REMO :cite:`Geleyn2008,Bouteloup2011`. In
+this scheme, a cost‐efficient statistical sedimentation algorithm is
+used. The scheme uses probabilistic approach for three types of
+precipitation: 1) existing precipitation in a layer; 2) precipitation
+coming from layer above (and possibly going through the layer) and 3)
+locally produced precipitation. If the scheme is active, the
+precipitation that resided in different layers after the cloud scheme
+will undergo horizontal transport processes described in
+:numref:`sec_wetcore`.
+
+
+.. _sec_asselin:
+
+Time Filtering
+--------------
+
+REMO uses a leap-frog scheme with Robert-Asselin (RA) time filtering
+by :cite:`Asselin1972` for the temporal discretization. To allow for
+longer time steps a semi-implicit correction is used. It is also
+possible to use the Robert–Asselin–Williams (RAW) filter
+:cite:`Williams2009,Williams2011`. In RAW approach, the filter is not
+only applied to ``t`` time step values but also to ``t+1`` values. The
+factor alpha, which modifies the ``t`` and ``t+1`` filtering
+efficiency (alpha == 1 is actually the original RA filter), can be set
+in ``PHYCTL`` namelist and has the name ``RAWA`` (default 1.0). In
+short, RAW filter works like this:
+
+::
+
+   ! Compute tendency (eg.g in physics)
+   var_tend = ...
+
+   ! Leap-frog step
+   var_nnew = var_old + 2*delta_time*var_tend
+
+   ! Compute filter
+   d = nu*(var_nold - 2*var_nnow + var_nnew)
+
+   ! Apply filter
+   var_nnow = var_nnow + d*rawa
+   var_nnew = var_nnew + d*(1.0-rawa)
+
+Here nold denotes REMO ``NA`` time step (t-1), nnow ``NJ`` time
+step (t) and nnew ``NE`` time step (t+1). ``nu`` is set in the model
+(it includes the d/2 term that is normally in the equation; that is
+``nu = nu_normal/2.``). If ``rawa=1.0``, the last term drops out and
+the RAW-filter becomes normal RA-filter (for detail please see
+:cite:`Williams2009,Williams2011`).
+
+
+
 .. rubric:: Footnotes
 
 .. [#phd_thesis]
@@ -556,6 +768,3 @@ described in .
    Regional Climate Modelling” (Chapter 3) by Sven Kotlarski and
    “Climate and Air Pollution Modelling in South America with Focus on
    Megacities” (Chapter 2) by Claas Teichmann
-
-.. bibliography:: references.bib
-   :style: plain
