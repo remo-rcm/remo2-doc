@@ -375,6 +375,9 @@ density :cite:`Riche2013`. In the original approach the snow heat
 conductivity decreased as temperature decreased, but the new one only
 checks the density and calculated the conductivity based on it.
 
+The 3-layer snow module can be activated with the ``LMLSN`` namelist
+switch.
+
 Snow Albedo
 ~~~~~~~~~~~
 
@@ -450,6 +453,9 @@ It should be noted that if the lake model FLake is active, both snow
 albedo schemes can be used similarly to calculate the snow albedo over
 frozen lakes. The forest fraction and snow depth (background albedo)
 won't influence the albedo over lakes.
+
+The different snow albedo approached can be set using the ``SNALB``
+namelist variable.
 
 
 Glaciers
@@ -647,7 +653,7 @@ Aerosol Climatology
 -------------------
 
 In the default configuration of REMO, the radiation module uses Tanre
-aerosol climatology :cite:`Tanre1984'. This climatology is old and has
+aerosol climatology :cite:`Tanre1984`. This climatology is old and has
 many deficiencies, for example too high values over North-Africa and
 Europe. REMO nowadays also includes an alternative climatology: MAC-v2
 for natural aerosols and long-wave (LW) absorption :cite:`Kinne2019`
@@ -675,6 +681,9 @@ total long-wave files (no year-to-year variation) and an online-module
 that calculates the anthropogenic AOD. The anthorpogenic part varies
 from year-to-year and can be also used with scenario forcing.
 
+The aerosol climatology can be changed by altering the ``IAERCLI``
+namelist variable.
+
 .. _sec_wetcore:
 
 Wet Advection
@@ -700,6 +709,8 @@ humidity, cloud water and cloud ice. If the prognostic precipitation
 is used, also the precipitation species (rain and snow) are
 transported.
 
+Different wet-transport configurations can be used by changing the
+``IWETCORE`` namelist variable.
 
 
 Prognostic Precipitation
@@ -719,6 +730,9 @@ locally produced precipitation. If the scheme is active, the
 precipitation that resided in different layers after the cloud scheme
 will undergo horizontal transport processes described in
 :numref:`sec_wetcore`.
+
+The prognostic precipitation can be switched on using the ``LPROGP``
+namelist variable.
 
 
 .. _sec_asselin:
@@ -756,7 +770,7 @@ Here nold denotes REMO ``NA`` time step (t-1), nnow ``NJ`` time
 step (t) and nnew ``NE`` time step (t+1). ``nu`` is set in the model
 (it includes the d/2 term that is normally in the equation; that is
 ``nu = nu_normal/2.``). If ``rawa=1.0``, the last term drops out and
-the RAW-filter becomes normal RA-filter (for detail please see
+the RAW-filter becomes the normal RA-filter (for detail please see
 :cite:`Williams2009,Williams2011`).
 
 
