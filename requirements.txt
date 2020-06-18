@@ -1,0 +1,15 @@
+#
+# Add your pinned requirements so that they can be easily installed with:
+# pip install -r requirements.txt
+# Remember to also add them in setup.cfg but unpinned.
+# Example:
+# numpy==1.13.3
+# scipy==1.0
+sphinx_bootstrap_theme==0.7.1
+sphinxcontrib-applehelp==1.0.1
+sphinxcontrib-bibtex==1.0.0
+sphinxcontrib-devhelp==1.0.1
+sphinxcontrib-htmlhelp==1.0.2
+sphinxcontrib-jsmath==1.0.1
+sphinxcontrib-qthelp==1.0.2
+sphinxcontrib-serializinghtml==1.1.3
