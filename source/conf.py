@@ -38,6 +38,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinxcontrib.bibtex',
     'sphinx.ext.autosectionlabel',
+    'sphinx_revealjs',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
