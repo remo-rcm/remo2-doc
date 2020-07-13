@@ -60,7 +60,7 @@ master_doc = 'index'
 # General information about the project.
 project = u'REMO Documentation and User Guide'
 copyright = u'2019, Lars Buntemeyer'
-author = u'Lars Buntemeyer'
+author = [u'Lars Buntemeyer', u'Joni-Pekka Pietikäinen']
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
