@@ -43,26 +43,15 @@ available variable list for I/O can be found from
 
 In the original implementation, the IMove main part was called before
 vertical diffusion (old:``phyorg``;
-new:``Driver_organize_physics``). The thing here is that vertical
-diffusion sets the canopy resistance and IMove changes this value,
-thus it is called before vertical diffusion. However, there is a
-problem with radiation, which is called after IMove call. IMove uses
-the incoming short-wave fluxes and thus in the first time step they
-have been zero and otherwise always behind the calculation by one time
-step. The reason for this is that IMove also updates the land albedo
-and albedo is an input variable for radiation part.
+new:``Driver_organize_physics``). In the new remo2 version IMove is
+basically called in the same point, but now the radiation call follows
+and vertical diffusion comes after that.
 
-In the new implementation a different approach has been done. First of
-all, the modification of the canopy resistance is now in its separate
-subroutine
-::
+In the new implementation some IMove parts have been subtracted from
+the main interface. First of all, the modification of the canopy
+resistance is now in its separate subroutine ::
 
    source/physics/land/Vegetation/VegetationMain/IMove/Vegetation_can_res.f90
-
-IMove is called only after radiation just before the main ``Surface``
-subroutine is called. Thus, in vertical diffusion
-``Vegetation_can_res.f90`` is only called after the first time step
-(it uses the default values for the first time step).
 
 Next bigger modification is that earlier the albedo changes were
 calculated in the main part of IMove and in the new approach they are
@@ -89,9 +78,8 @@ IMove changes before radiation and the new fluxes from radiation will
 be used as an input for IMove. Moreover, with this approach there is
 no discrepancy in the time step values.
 
-The main IMove part is called before surface and the new interface can
-be found from
-::
+The main IMove is now in a new interface (old vegphy) and it can be
+found from ::
 
    source/physics/land/Vegetation/VegetationMain/IMove/Vegetation.f90
 
