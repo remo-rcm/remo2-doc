@@ -1,8 +1,6 @@
 # remo documentation
 
-[![pipeline status](http://git.gerics.de/REMO/remo2-doc/badges/master/pipeline.svg)](http://git.gerics.de/REMO/remo2-doc/commits/master)
-
-[Internal link](http://136.172.63.17/remo2-doc/html/) to the html version
+[![Documentation Status](https://readthedocs.org/projects/remo2-doc/badge/?version=latest)](https://remo2-doc.readthedocs.io/en/latest/?badge=latest)
 
 The documentation for remo2 is using [sphinx](https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html).
 If you want to build the documentation, you can choose between `html` or `pdf`, using:
