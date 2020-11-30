@@ -8,7 +8,7 @@ There are two documents available concerning the IMOVE documentation:
 - :download:`Technical Documentation <pdf/REMO_iMOVE_technical_docu_and_preprocessor.pdf>`
 
 Implementation to remo2
-=======================
+-----------------------
 
 IMove was re-implemented to REMO in 2020. The new implementation
 follows the original implementation structure, but has some
