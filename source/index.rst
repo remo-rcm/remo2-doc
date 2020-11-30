@@ -22,6 +22,7 @@ Contents:
    postprocess
    memory
    externals
+   dev_guide
    appendix
    syntax-examples
    zzbibliography
