@@ -8,7 +8,7 @@ have not worked with the model since REMO2015 :cite:`Jacob2012`, you might ask, 
 The main idea behind the new model version is to make the model more easy to maintain and extend.
 During the development, we try to keep in mind the *open-closed princple* which mainly
 states that "software entities (classes, modules, functions, etc.) should be open for extension, 
-but closed for modification" [#martin_open_closed]_. 
+but closed for modification" [#martin_open_closed]_.
 
 
 
